@@ -1,3 +1,4 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/CQGAZ1q8)
 # Introduction
 In this course project, students will work in groups of up to 3 people, regardless of their section, to design and implement a web application using Ruby on Rails. The goal is to create a simplified social platform centered on image sharing, inspired by applications such as Pinterest (without using that name or branding). The main purpose of this project is to help students put into practice the concepts learned in class by developing a functional, interactive, and visually appealing web app that focuses on content sharing and basic user interaction.
 
