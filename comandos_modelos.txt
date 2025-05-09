@@ -1,0 +1,9 @@
+rails generate model User user_id:integer user_name:string email:string password:string bio:string auth_token:references photo_profile:string created_at:datetime
+rails generate model UserToken user_token:integer user_id:references token:string expired_at:datetime
+rails generate model Follower 
+rails generate model Post post_id:integer user_id:references created_at:datetime caption:string location:string update_at:datetime image_count:integer
+rails generate model Comment comment_id:integer post_id:references user_id:references created_at:datetime text:string
+rails generate model Like like_id:integer post_id:references user_id:references created_at:datetime
+rails generate model PostHashtag post_id:references hashtag_id:references
+rails generate model Hashtag hashtag_id:integer tag:string 
+rails generate model Image 
