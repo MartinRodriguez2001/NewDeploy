@@ -6,9 +6,9 @@ rails generate model Comment text:string user:references post:references
 rails generate model Like user:references post:references
 rails generate model Hashtag tag:string
 rails generate model PostHashtag post:references hashtag:references
-rails generate migration CreateFollowers follower_id:integer followed_id:integer
 rails generate model Notification notification_type:string is_read:boolean user:references
 rails generate model ActivityHistory activity_type:string user:references post:references
-rails generate migration CreateChats user_id1:integer user_id2:integer
+rails generate model Chat user_id1:integer user_id2:integer
 rails generate model Message content:text sender_id:integer receiver_id:integer chat:references
 rails generate model Report reason:string status:string reporter_id:integer reported_user_id:integer
+rails generate model Follower follower_id:integer followed_id:integer
