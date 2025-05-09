@@ -1,9 +1,14 @@
 rails generate model User user_id:integer user_name:string email:string password:string bio:string auth_token:references photo_profile:string created_at:datetime
 rails generate model UserToken user_token:integer user_id:references token:string expired_at:datetime
-rails generate model Follower 
+rails generate model Follower follower_id:references followed_id:references 
 rails generate model Post post_id:integer user_id:references created_at:datetime caption:string location:string update_at:datetime image_count:integer
 rails generate model Comment comment_id:integer post_id:references user_id:references created_at:datetime text:string
 rails generate model Like like_id:integer post_id:references user_id:references created_at:datetime
 rails generate model PostHashtag post_id:references hashtag_id:references
 rails generate model Hashtag hashtag_id:integer tag:string 
-rails generate model Image 
+rails generate model Image image_id:integer post_id:references image_url:string position:integer created_at:datetime update_at:datetime
+rails generate model Notification notification_id:integer user_id:references type:string is_read:bool created_at:datetime
+rails generate model ActivityHistory activity_history_id:integer user_id:references post_id:references type:string created_at:datetime
+rails generate model Message message_id:integer chat_id:references sender_id:references receiver_id:references content:string send_date:datetime
+rails generate model Chat chat_id:integer user_id1:references user_id2:references created_at:datetime
+rails generate model Report report_id:integer reporter_id:references reported_user_id:references reason:string status:string
