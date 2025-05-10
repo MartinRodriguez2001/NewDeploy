@@ -1,4 +1,29 @@
 Rails.application.routes.draw do
+  root 'posts#index'
+
+  resources :users do
+    resources :user_tokens, except: [:show]
+    resources :notifications, only: [:index, :show]
+  end
+
+  resources :posts do
+    resources :images
+    resources :comments
+    resources :likes, only: [:create, :destroy]
+    resources :post_hashtags, only: [:create, :destroy]
+  end
+
+  resources :hashtags
+  resources :notifications
+  resources :activity_histories, only: [:index, :show, :destroy]
+
+  resources :chats do
+    resources :messages, only: [:index, :show, :create, :destroy]
+  end
+
+  resources :reports, only: [:index, :show, :new, :create, :destroy]
+  resources :followers, only: [:create, :destroy]
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
