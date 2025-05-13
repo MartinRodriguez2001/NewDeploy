@@ -1,2 +1,132 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+// Variables de color
+$bg-gradient-start: #0a1930;
+$bg-gradient-end: #1e3a6a;
+
+// Estilos personalizados para el fondo (sin recuadro)
+body {
+  background: linear-gradient(135deg, $bg-gradient-start, $bg-gradient-end);
+  color: #fff;
+  min-height: 100vh;
+}
+
+// Eliminar fondo diferenciado de las secciones
+.hero, .features {
+  background: transparent;
+  padding: 4rem 1rem;
+}
+
+// Barra de navegación
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.user-avatar-sm {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-menu {
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+// Footer
+.footer {
+  margin-top: 2rem;
+  padding: 1rem 0;
+  background-color: rgba(0,0,0,0.2);
+  color: #fff;
+  text-align: center;
+  width: 100%;
+}
+
+// Estilos para formularios y cards
+.card {
+  margin-bottom: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  }
+}
+
+// Cartas interactivas para la página principal
+.feature-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background-color: rgba(51, 65, 85, 0.8);
+  
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    background-color: rgba(59, 130, 246, 0.3);
+  }
+  
+  h3 {
+    transition: color 0.3s ease;
+  }
+  
+  &:hover h3 {
+    color: #4CAF50;
+  }
+}
+
+.auth-logo {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, #2196F3, #4CAF50);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+// Botones interactivos
+.btn {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+}
+
+// Otros estilos existentes
+.navbar {
+  margin-bottom: 2rem;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hashtag {
+  color: #007bff;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}

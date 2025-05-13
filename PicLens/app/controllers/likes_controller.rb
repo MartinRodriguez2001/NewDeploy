@@ -1,33 +1,25 @@
 class LikesController < ApplicationController
-  before_action :set_post
-  before_action :set_like, only: [:destroy]
+  before_action :require_login
 
   def create
-    @like = @post.likes.build(user_id: params[:user_id])
-    if @like.save
-      redirect_to @post, notice: 'Like agregado correctamente.'
+    @post = Post.find(params[:post_id])
+    @like = @post.likes.find_or_initialize_by(user: current_user)
+    if @like.persisted?
+      redirect_to post_path(@post), alert: 'Ya diste like a este post.'
     else
-      redirect_to @post, alert: 'No se pudo agregar el like.'
+      @like.save
+      redirect_to post_path(@post), notice: '¡Te gustó este post!'
     end
   end
 
   def destroy
-    @like.destroy
-
-    redirect_to @post, notice: 'Like eliminado correctamente.'
-  end
-
-  private
-
-  def set_post
     @post = Post.find(params[:post_id])
-  end
-
-  def set_like
-    @like = @post.likes.find(params[:id])
-  end
-
-  def like_params
-    params.require(:like).permit(:user_id)
+    @like = @post.likes.find_by(user: current_user)
+    if @like
+      @like.destroy
+      redirect_to post_path(@post), notice: 'Ya no te gusta este post.'
+    else
+      redirect_to post_path(@post), alert: 'No habías dado like a este post.'
+    end
   end
 end

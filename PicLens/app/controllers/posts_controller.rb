@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  before_action :require_login, except: [:index, :show]
   before_action :set_post, only: %i[show edit update destroy]
 
   def index
@@ -6,6 +7,8 @@ class PostsController < ApplicationController
   end
 
   def show
+    @comments = @post.comments.includes(:user)
+    @like = @post.likes.find_by(user: current_user)
   end
 
   def new

@@ -1,6 +1,7 @@
 class CommentsController < ApplicationController
   before_action :set_post
   before_action :set_comment, only: %i[show edit update destroy]
+  before_action :require_login
 
   def index
     @comments = @post.comments.includes(:user)
@@ -15,10 +16,11 @@ class CommentsController < ApplicationController
 
   def create
     @comment = @post.comments.build(comment_params)
+    @comment.user = current_user
     if @comment.save
-      redirect_to post_comments_path(@post), notice: 'Comentario agregado correctamente.'
+      redirect_to post_path(@post), notice: 'Comentario agregado.'
     else
-      render :new
+      redirect_to post_path(@post), alert: 'No se pudo agregar el comentario.'
     end
   end
 
@@ -49,6 +51,6 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    params.require(:comment).permit(:text, :user_id)
+    params.require(:comment).permit(:text)
   end
 end

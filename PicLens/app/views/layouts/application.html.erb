@@ -26,6 +26,98 @@
   </head>
 
   <body>
-    <%= yield %>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgba(0,0,0,0.3);">
+      <div class="container">
+        <%= link_to root_path, class: "navbar-brand" do %>
+          <span class="gradient-text">PicLens</span>
+        <% end %>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <% if logged_in? %>
+              <li class="nav-item">
+                <%= link_to new_post_path, class: "nav-link" do %>
+                  <i class="bi bi-plus-square"></i> Crear Post
+                <% end %>
+              </li>
+              <li class="nav-item">
+                <%= link_to posts_path, class: "nav-link" do %>
+                  <i class="bi bi-grid-3x3"></i> Explorar
+                <% end %>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                  <% if current_user.profile_picture.attached? %>
+                    <%= image_tag current_user.profile_picture, class: "user-avatar-sm me-1", alt: "Avatar" %>
+                  <% elsif current_user.photo_profile.present? %>
+                    <img src="<%= current_user.photo_profile %>" class="user-avatar-sm me-1" alt="Avatar">
+                  <% else %>
+                    <i class="bi bi-person-circle"></i>
+                  <% end %>
+                  <%= current_user.user_name %>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <%= link_to edit_user_path(current_user), class: "dropdown-item" do %>
+                      <i class="bi bi-person"></i> Mi Perfil
+                    <% end %>
+                  </li>
+                  <li>
+                    <%= link_to user_posts_path(current_user), class: "dropdown-item" do %>
+                      <i class="bi bi-images"></i> Mis publicaciones
+                    <% end %>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <%= button_to logout_path, method: :delete, class: "dropdown-item text-danger" do %>
+                      <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    <% end %>
+                  </li>
+                </ul>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <%= link_to "Iniciar Sesión", login_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Registrarse", new_user_path, class: "nav-link btn btn-success btn-sm text-white ms-2" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Mensajes flash -->
+    <div class="container mt-3">
+      <% if notice %>
+        <div class="alert alert-success alert-dismissible fade show">
+          <i class="bi bi-check-circle-fill"></i> <%= notice %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% end %>
+      
+      <% if alert %>
+        <div class="alert alert-danger alert-dismissible fade show">
+          <i class="bi bi-exclamation-triangle-fill"></i> <%= alert %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="container py-4">
+      <%= yield %>
+    </div>
+    
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; <%= Date.today.year %> PicLens. Todos los derechos reservados.</p>
+      </div>
+    </footer>
   </body>
 </html>

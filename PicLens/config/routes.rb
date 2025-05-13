@@ -1,7 +1,16 @@
 Rails.application.routes.draw do
+  get "sessions/new"
+  get "sessions/create"
+  get "sessions/destroy"
   root "pages#home"
 
-  resources :users do
+  resources :users, only: [:new, :create, :show, :edit, :update]
+  get 'login', to: 'sessions#new'
+  post 'login', to: 'sessions#create'
+  delete 'logout', to: 'sessions#destroy'
+
+  resources :users, only: [:new, :create, :show, :edit, :update] do
+    resources :posts, only: [:index], controller: 'user_posts'
     resources :user_tokens, except: [:show]
     resources :notifications, only: [:index, :show]
   end

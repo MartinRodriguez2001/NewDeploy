@@ -1,2 +1,103 @@
 <h1>Users#edit</h1>
 <p>Find me in app/views/users/edit.html.erb</p>
+
+<div class="row">
+  <!-- Perfil de usuario -->
+  <div class="col-md-4">
+    <div class="card shadow">
+      <div class="card-body text-center">
+        <% if @user.persisted? %>
+          <% if @user.profile_picture.attached? %>
+            <%= image_tag @user.profile_picture, class: "img-fluid rounded-circle mb-3", style: "width: 150px; height: 150px; object-fit: cover;" %>
+          <% elsif @user.photo_profile.present? %>
+            <img src="<%= @user.photo_profile %>" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+          <% else %>
+            <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 150px; height: 150px;">
+              <i class="bi bi-person-circle" style="font-size: 80px;"></i>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 150px; height: 150px;">
+            <i class="bi bi-person-circle" style="font-size: 80px;"></i>
+          </div>
+        <% end %>
+        
+        <h3><%= @user.user_name %></h3>
+        <p class="text-muted"><%= @user.email %></p>
+        <p><%= @user.bio %></p>
+        
+        <hr>
+        <div class="d-flex justify-content-around text-center">
+          <div>
+            <h5><%= @user.posts.count %></h5>
+            <small class="text-muted">Publicaciones</small>
+          </div>
+          <div>
+            <h5><%= @user.followers.count %></h5>
+            <small class="text-muted">Seguidores</small>
+          </div>
+          <div>
+            <h5><%= @user.following.count %></h5>
+            <small class="text-muted">Siguiendo</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Formulario de edición -->
+  <div class="col-md-8">
+    <div class="card shadow">
+      <div class="card-header">
+        <h2>Editar perfil</h2>
+      </div>
+      <div class="card-body">
+        <% if @user.errors.any? %>
+          <div class="alert alert-danger">
+            <h5>Corrige los siguientes errores:</h5>
+            <ul class="mb-0">
+              <% @user.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <%= form_with model: @user, local: true, html: { multipart: true } do |f| %>
+          <div class="mb-3">
+            <%= f.label :user_name, "Nombre de usuario" %>
+            <%= f.text_field :user_name, class: "form-control" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :email, "Correo electrónico" %>
+            <%= f.email_field :email, class: "form-control" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :password, "Contraseña (dejar en blanco si no deseas cambiarla)" %>
+            <%= f.password_field :password, class: "form-control" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :bio, "Biografía" %>
+            <%= f.text_area :bio, class: "form-control", rows: 3 %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :photo_profile, "URL de la foto de perfil" %>
+            <%= f.text_field :photo_profile, class: "form-control" %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :profile_picture, "O subir foto de perfil desde tu dispositivo" %>
+            <%= f.file_field :profile_picture, class: "form-control" %>
+          </div>
+
+          <div class="text-end">
+            <%= link_to "Cancelar", user_path(@user), class: "btn btn-outline-secondary me-2" %>
+            <%= f.submit "Guardar cambios", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,2 +1,59 @@
-<h1>Posts#new</h1>
-<p>Find me in app/views/posts/new.html.erb</p>
+<div class="card shadow">
+  <div class="card-header">
+    <h2>Crear nueva publicación</h2>
+  </div>
+  <div class="card-body">
+    <%= form_with model: @post, local: true, html: { multipart: true } do |f| %>
+      <% if @post.errors.any? %>
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+            <% @post.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      
+      <div class="mb-3">
+        <%= f.label :caption, "Descripción" %>
+        <%= f.text_area :caption, class: "form-control", rows: 3 %>
+      </div>
+      
+      <div class="mb-3">
+        <%= f.label :location, "Ubicación (opcional)" %>
+        <%= f.text_field :location, class: "form-control" %>
+      </div>
+      
+      <div class="mb-3">
+        <%= f.label :image_url, "URL de la imagen (opcional)" %>
+        <%= f.text_field :image_url, class: "form-control" %>
+      </div>
+      <div class="mb-3">
+        <%= f.label :file, "O subir imagen desde tu dispositivo" %>
+        <%= f.file_field :file, class: "form-control" %>
+      </div>
+      
+      <div class="mb-3">
+        <%= f.label "Hashtags (opcional)" %>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Agregar hashtags separados por espacios">
+          <button class="btn btn-outline-secondary" type="button">
+            <i class="bi bi-plus"></i> Agregar
+          </button>
+        </div>
+        <div class="hashtag-container mt-2">
+          <span class="badge bg-primary me-1">#fotografia</span>
+          <span class="badge bg-primary me-1">#naturaleza</span>
+        </div>
+      </div>
+      
+      <%= f.hidden_field :user_id, value: current_user.id %>
+      <%= f.hidden_field :image_count, value: 1 %>
+      
+      <div class="text-end">
+        <%= link_to "Cancelar", posts_path, class: "btn btn-outline-secondary me-2" %>
+        <%= f.submit "Publicar", class: "btn btn-success" %>
+      </div>
+    <% end %>
+  </div>
+</div>
