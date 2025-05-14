@@ -31,8 +31,6 @@ Rails.application.routes.draw do
   resources :chats, only: [:index, :show]
   post 'send_message', to: 'chats#create'
   
-  resources :direct_messages, only: [:index, :create]
-
   resources :reports, only: [:index, :show, :new, :create, :destroy]
   resources :followers, only: [:create, :destroy]
 

@@ -109,8 +109,8 @@
                   </div>
                 </div>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <li class="nav-item">
+                <%= link_to dashboard_path, class: "nav-link d-flex align-items-center" do %>
                   <% if current_user.profile_picture.attached? %>
                     <%= image_tag current_user.profile_picture, class: "user-avatar-sm me-1", alt: "Avatar" %>
                   <% elsif current_user.photo_profile.present? %>
@@ -121,25 +121,7 @@
                     <i class="bi bi-person-circle me-1"></i>
                   <% end %>
                   <span><%= current_user.user_name %></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                  <li>
-                    <%= link_to user_path(current_user), class: "dropdown-item" do %>
-                      <i class="bi bi-person"></i> Mi perfil
-                    <% end %>
-                  </li>
-                  <li>
-                    <%= link_to edit_user_path(current_user), class: "dropdown-item" do %>
-                      <i class="bi bi-gear"></i> Modificar perfil
-                    <% end %>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li>
-                    <%= button_to logout_path, method: :delete, class: "dropdown-item text-danger" do %>
-                      <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                    <% end %>
-                  </li>
-                </ul>
+                <% end %>
               </li>
             <% elsif !current_page?(root_path) %>
               <li class="nav-item">
@@ -192,19 +174,6 @@
         var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
           return new bootstrap.Dropdown(dropdownToggleEl)
         })
-        
-        // Asegurarse de que el menú de usuario funcione correctamente
-        var userDropdown = document.getElementById('userDropdown')
-        if (userDropdown) {
-          userDropdown.addEventListener('click', function(event) {
-            event.preventDefault()
-            var dropdown = bootstrap.Dropdown.getInstance(userDropdown)
-            if (!dropdown) {
-              dropdown = new bootstrap.Dropdown(userDropdown)
-            }
-            dropdown.toggle()
-          })
-        }
       })
     </script>
   </body>

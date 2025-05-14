@@ -16,8 +16,10 @@ class UsersController < ApplicationController
 
   def show
     @posts = @user.posts.includes(:images, :likes, :comments).order(created_at: :desc)
-    @followers = @user.followers.includes(follower: [:profile_picture_attachment])
-    @following = @user.following.includes(:profile_picture_attachment)
+    
+    # Cargar los seguidores y seguidos con includes para optimizar las consultas
+    @followers = @user.passive_relationships.includes(follower: [:profile_picture_attachment])
+    @following = @user.following
   end
 
   def new
