@@ -6,6 +6,14 @@ class UsersController < ApplicationController
     @users = User.all
   end
 
+  def discover
+    # Excluye a los usuarios que ya sigues y a ti mismo
+    @users = User.where.not(id: current_user.id)
+                 .where.not(id: current_user.following.pluck(:id))
+                 .order(created_at: :desc)
+                 .page(params[:page]).per(12)
+  end
+
   def show
     @posts = @user.posts.includes(:images, :likes, :comments).order(created_at: :desc)
     @followers = @user.followers.includes(follower: [:profile_picture_attachment])
@@ -22,7 +30,11 @@ class UsersController < ApplicationController
     @user.photo_profile = "https://via.placeholder.com/150"
     
     if @user.save
-      redirect_to root_path, notice: "Usuario creado correctamente. ¡Inicia sesión!"
+      session[:user_id] = @user.id
+      @user.update(last_login_at: Time.current)
+      
+      flash[:notice] = "¡Bienvenido a PicLens, #{@user.user_name}! Tu cuenta ha sido creada exitosamente."
+      redirect_to dashboard_path
     else
       render :new, status: :unprocessable_entity
     end

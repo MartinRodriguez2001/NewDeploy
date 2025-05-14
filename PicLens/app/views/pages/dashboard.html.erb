@@ -56,10 +56,42 @@
             </div>
           <% else %>
             <p class="text-muted">Aún no tienes publicaciones.</p>
+            <%= link_to "Crear mi primera publicación", new_post_path, class: "btn btn-primary" %>
           <% end %>
         </div>
       </div>
-      <!-- Aquí puedes agregar más widgets: notificaciones, actividad, etc. -->
+      
+      <% if @suggested_users.any? %>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Usuarios sugeridos para seguir</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <% @suggested_users.each do |user| %>
+                <div class="col-md-4 mb-3">
+                  <div class="card h-100">
+                    <div class="card-body text-center">
+                      <% if user.profile_picture.attached? %>
+                        <%= image_tag user.profile_picture, class: "rounded-circle mb-2", style: "width: 60px; height: 60px; object-fit: cover;" %>
+                      <% elsif user.photo_profile.present? %>
+                        <img src="<%= user.photo_profile %>" class="rounded-circle mb-2" style="width: 60px; height: 60px; object-fit: cover;">
+                      <% else %>
+                        <i class="bi bi-person-circle mb-2" style="font-size: 60px;"></i>
+                      <% end %>
+                      <h6 class="card-title"><%= user.user_name %></h6>
+                      <%= button_to "Seguir", followers_path(followed_id: user.id), class: "btn btn-outline-primary btn-sm", method: :post %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <div class="text-center mt-3">
+              <%= link_to "Ver más usuarios", discover_path, class: "btn btn-primary" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div> 

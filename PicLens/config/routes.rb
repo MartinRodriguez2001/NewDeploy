@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
 
+  get 'discover', to: 'users#discover', as: :discover
+
   resources :users, only: [:new, :create, :show, :edit, :update] do
     resources :posts, only: [:index], controller: 'user_posts'
     resources :user_tokens, except: [:show]

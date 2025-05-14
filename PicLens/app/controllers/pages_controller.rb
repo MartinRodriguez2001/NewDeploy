@@ -9,6 +9,10 @@ class PagesController < ApplicationController
     @recent_posts = current_user.posts.order(created_at: :desc).limit(5)
     @followers = current_user.followers.limit(5)
     @following = current_user.following.limit(5)
+    @suggested_users = User.where.not(id: current_user.id)
+                          .where.not(id: current_user.following.pluck(:id))
+                          .order("RANDOM()")
+                          .limit(3)
   end
 
   def main
