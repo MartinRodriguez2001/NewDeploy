@@ -1,0 +1,90 @@
+<div class="post-card mb-4">
+  <div class="card-header bg-white py-3">
+    <div class="d-flex align-items-center">
+      <% if post.user.profile_picture.attached? %>
+        <%= image_tag post.user.profile_picture, class: "user-avatar-sm me-2", alt: post.user.user_name %>
+      <% elsif post.user.photo_profile.present? %>
+        <img src="<%= post.user.photo_profile %>" class="user-avatar-sm me-2" alt="<%= post.user.user_name %>">
+      <% else %>
+        <i class="bi bi-person-circle fs-4 me-2"></i>
+      <% end %>
+      <div>
+        <%= link_to post.user.user_name, user_path(post.user), class: "text-dark text-decoration-none fw-bold" %>
+        <% if post.location.present? %>
+          <small class="text-muted d-block"><i class="bi bi-geo-alt"></i> <%= post.location %></small>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="position-relative">
+    <% if post.images.any? %>
+      <div id="carousel-<%= post.id %>" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% post.images.each_with_index do |image, index| %>
+            <div class="carousel-item <%= 'active' if index.zero? %>">
+              <% if image.file.attached? %>
+                <%= image_tag image.file, class: "post-image w-100", alt: "Imagen del post" %>
+              <% else %>
+                <img src="<%= image.image_url %>" class="post-image w-100" alt="Imagen del post">
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        <% if post.images.count > 1 %>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carousel-<%= post.id %>" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carousel-<%= post.id %>" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <%= button_to post_likes_path(post), class: "btn btn-link text-dark p-0 me-3", method: :post do %>
+          <i class="bi <%= post.likes.exists?(user: current_user) ? 'bi-heart-fill text-danger' : 'bi-heart' %>"></i>
+          <span class="ms-1"><%= post.likes_count %></span>
+        <% end %>
+        <%= link_to post_path(post), class: "btn btn-link text-dark p-0 me-3" do %>
+          <i class="bi bi-chat"></i>
+          <span class="ms-1"><%= post.comments_count %></span>
+        <% end %>
+      </div>
+      <small class="text-muted"><%= time_ago_in_words(post.created_at) %></small>
+    </div>
+
+    <% if post.caption.present? %>
+      <p class="card-text">
+        <span class="fw-bold"><%= post.user.user_name %></span>
+        <%= post.caption %>
+      </p>
+    <% end %>
+
+    <% if post.hashtags.any? %>
+      <div class="mb-2">
+        <% post.hashtags.each do |hashtag| %>
+          <%= link_to "##{hashtag.tag}", hashtag_path(hashtag), class: "hashtag-link" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if post.comments.any? %>
+      <div class="comments-preview">
+        <% post.comments.limit(2).each do |comment| %>
+          <p class="card-text mb-1">
+            <span class="fw-bold"><%= comment.user.user_name %></span>
+            <%= comment.text %>
+          </p>
+        <% end %>
+        <% if post.comments.count > 2 %>
+          <%= link_to "Ver todos los comentarios", post_path(post), class: "text-muted text-decoration-none" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div> 

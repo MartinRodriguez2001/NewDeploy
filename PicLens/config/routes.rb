@@ -26,12 +26,16 @@ Rails.application.routes.draw do
   resources :notifications
   resources :activity_histories, only: [:index, :show, :destroy]
 
-  resources :chats do
-    resources :messages, only: [:index, :show, :create, :destroy]
-  end
+  resources :chats, only: [:index, :show]
+  post 'send_message', to: 'chats#create'
+  
+  resources :direct_messages, only: [:index, :create]
 
   resources :reports, only: [:index, :show, :new, :create, :destroy]
   resources :followers, only: [:create, :destroy]
+
+  get 'dashboard', to: 'pages#dashboard', as: :dashboard
+  get 'main', to: 'pages#main', as: :main
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -2,10 +2,14 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card mb-4">
-        <% if @post.images.any? && @post.images.first.file.attached? %>
-          <%= image_tag @post.images.first.file, class: "card-img-top post-image", alt: "Imagen del post" %>
-        <% elsif @post.images.any? %>
-          <img src="<%= @post.images.first.image_url %>" class="card-img-top post-image" alt="Imagen del post">
+        <% if @post.images.any? %>
+          <% if @post.images.first.image_url.present? %>
+            <% image_url = @post.images.first.image_url %>
+            <% image_url = "http://#{image_url}" unless image_url.start_with?('http://', 'https://') %>
+            <img src="<%= image_url %>" class="card-img-top post-image" alt="Imagen del post">
+          <% elsif @post.images.first.file.attached? %>
+            <%= image_tag url_for(@post.images.first.file), class: "card-img-top post-image", alt: "Imagen del post" %>
+          <% end %>
         <% end %>
         <div class="card-body">
           <h3><%= @post.caption %></h3>

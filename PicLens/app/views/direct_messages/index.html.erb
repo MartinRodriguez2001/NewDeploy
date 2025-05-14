@@ -1,0 +1,75 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            Conversación con <%= @other_user.user_name %>
+          </h5>
+          <%= link_to "Volver", root_path, class: "btn btn-outline-secondary btn-sm" %>
+        </div>
+        
+        <div class="card-body">
+          <div id="messages" class="messages-container" data-controller="direct-messages">
+            <% @messages.each do |message| %>
+              <div class="message <%= message.sender == current_user ? 'sent' : 'received' %>">
+                <div class="message-content">
+                  <%= message.content %>
+                  <small class="text-muted">
+                    <%= time_ago_in_words(message.created_at) %>
+                  </small>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          
+          <%= form_with(model: @message, url: direct_messages_path(user_id: @other_user.id), 
+                      class: "message-form mt-3", 
+                      data: { action: "direct-messages#submit" }) do |f| %>
+            <div class="input-group">
+              <%= f.text_field :content, class: "form-control", 
+                             placeholder: "Escribe un mensaje...",
+                             data: { direct_messages_target: "input" } %>
+              <%= f.submit "Enviar", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= content_for :styles do %>
+  <style>
+    .messages-container {
+      height: 400px;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    
+    .message {
+      margin-bottom: 1rem;
+      display: flex;
+    }
+    
+    .message.sent {
+      justify-content: flex-end;
+    }
+    
+    .message-content {
+      max-width: 70%;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      background-color: #f0f2f5;
+    }
+    
+    .message.sent .message-content {
+      background-color: #0084ff;
+      color: white;
+    }
+    
+    .message.sent .text-muted {
+      color: rgba(255, 255, 255, 0.8) !important;
+    }
+  </style>
+<% end %> 

@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :logged_in?
 
+  private
+
   def current_user
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
@@ -12,9 +14,17 @@ class ApplicationController < ActionController::Base
     !!current_user
   end
 
-  def require_login
+  def require_user
     unless logged_in?
-      redirect_to login_path, alert: "Debes iniciar sesión para acceder a esta página."
+      flash[:alert] = "Debes iniciar sesión para realizar esta acción"
+      redirect_to login_path
+    end
+  end
+
+  def require_same_user
+    unless current_user == @user
+      flash[:alert] = "No tienes permiso para realizar esta acción"
+      redirect_to root_path
     end
   end
 end

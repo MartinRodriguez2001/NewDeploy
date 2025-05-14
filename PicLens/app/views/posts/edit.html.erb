@@ -1,2 +1,82 @@
-<h1>Posts#edit</h1>
-<p>Find me in app/views/posts/edit.html.erb</p>
+<div class="card shadow">
+  <div class="card-header">
+    <h2>Editar publicación</h2>
+  </div>
+  <div class="card-body">
+    <%= form_with model: @post, local: true, html: { multipart: true, id: "post-form" } do |f| %>
+      <% if @post.errors.any? %>
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+            <% @post.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      
+      <div class="mb-3">
+        <%= f.label :caption, "Descripción" %>
+        <%= f.text_area :caption, class: "form-control", rows: 3, required: true %>
+      </div>
+      
+      <div class="mb-3">
+        <%= f.label :location, "Ubicación (opcional)" %>
+        <%= f.text_field :location, class: "form-control" %>
+      </div>
+      
+      <div class="card mb-3">
+        <div class="card-header">
+          <h5>Imagen de la publicación</h5>
+          <% if @post.images.any? %>
+            <div class="mt-2">
+              <p>Imagen actual:</p>
+              <% if @post.images.first.image_url.present? %>
+                <% image_url = @post.images.first.image_url %>
+                <% image_url = "http://#{image_url}" unless image_url.start_with?('http://', 'https://') %>
+                <img src="<%= image_url %>" class="img-thumbnail" style="max-height: 200px;">
+              <% elsif @post.images.first.file.attached? %>
+                <%= image_tag url_for(@post.images.first.file), class: "img-thumbnail", style: "max-height: 200px;" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <%= f.label :image_url, "URL de la imagen" %>
+            <%= f.text_field :image_url, class: "form-control", placeholder: "https://ejemplo.com/imagen.jpg", value: (@post.images.first&.image_url || "") %>
+            <div class="form-text">Puedes usar cualquier URL de imagen pública de internet</div>
+          </div>
+          
+          <div class="mb-3">
+            <p class="text-center">- O -</p>
+          </div>
+          
+          <div class="mb-3">
+            <%= f.label :file, "Subir imagen desde tu dispositivo" %>
+            <%= f.file_field :file, class: "form-control", accept: "image/*" %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <%= f.label :hashtag_list, "Hashtags (opcional)" %>
+        <%= f.text_field :hashtag_list, value: @hashtag_list, class: "form-control", placeholder: "Escribe hashtags separados por comas (sin #)" %>
+        <div class="form-text">Ejemplo: naturaleza, viajes, comida</div>
+        
+        <% if @post.hashtags.any? %>
+          <div class="mt-2">
+            <p>Hashtags actuales:</p>
+            <% @post.hashtags.each do |hashtag| %>
+              <span class="badge bg-primary me-1 mb-1">#<%= hashtag.tag %></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      
+      <div class="text-end">
+        <%= link_to "Cancelar", post_path(@post), class: "btn btn-outline-secondary me-2" %>
+        <%= f.submit "Actualizar", class: "btn btn-success" %>
+      </div>
+    <% end %>
+  </div>
+</div>

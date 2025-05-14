@@ -5,6 +5,17 @@ class Hashtag < ApplicationRecord
   validates :tag, presence: true, uniqueness: true
 
   def self.find_or_create_by_tag(tag)
-    find_or_create_by(tag: tag.downcase.strip)
+    tag = tag.downcase.strip
+    Rails.logger.debug "Buscando o creando hashtag: #{tag}"
+    hashtag = find_or_create_by(tag: tag)
+    Rails.logger.debug "Hashtag encontrado/creado: #{hashtag.id} - #{hashtag.tag}"
+    hashtag
+  end
+  before_save :normalize_tag
+  
+  private
+  
+  def normalize_tag
+    self.tag = self.tag.downcase.strip if self.tag
   end
 end

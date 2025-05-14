@@ -1,34 +1,46 @@
-<section class="hero">
+<section class="hero text-center">
   <h1 class="hero-title">
-    Bienvenido a <span class="gradient-text">PixelPulse</span>
+    Bienvenido a <span class="gradient-text">PicLens</span>
   </h1>
   <p class="hero-subtitle">
     Descubre, comparte e inspírate con imágenes increíbles. Únete a nuestra comunidad creativa y da vida a tus momentos.
   </p>
-  <div class="hero-buttons">
-    <%= link_to "Comenzar Ahora", new_user_path, class: "btn btn-success" %>
-    <%= link_to "Ya tengo cuenta", login_path, class: "btn btn-light" %>
+  <div class="d-flex justify-content-center gap-3 mt-4">
+    <%= link_to "Comenzar Ahora", new_user_path, class: "btn btn-success px-4 fw-bold" %>
+    <%= link_to "Ya tengo cuenta", login_path, class: "btn btn-light px-4 fw-bold" %>
   </div>
 </section>
 
-<section class="features">
-  <h2 class="features-title">Características Destacadas</h2>
-  <div class="features-grid">
-    <div class="feature-card">
-      <h3>📤 Comparte Fácilmente</h3>
-      <p>Sube y comparte tus fotos con el mundo en segundos.</p>
+<section class="features mt-5">
+  <h2 class="features-title text-center mb-4">Características Destacadas</h2>
+  <div class="row g-4 justify-content-center">
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card-feature p-4 h-100 text-center">
+        <i class="bi bi-upload"></i>
+        <h5 class="fw-bold mt-2">Comparte Fácilmente</h5>
+        <p class="mb-0">Sube y comparte tus fotos con el mundo en segundos.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <h3>💬 Interactúa</h3>
-      <p>Da 'Me gusta' y comenta las publicaciones que te inspiran.</p>
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card-feature p-4 h-100 text-center">
+        <i class="bi bi-chat-dots"></i>
+        <h5 class="fw-bold mt-2">Interactúa</h5>
+        <p class="mb-0">Da 'Me gusta' y comenta las publicaciones que te inspiran.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <h3>👥 Conecta</h3>
-      <p>Sigue a tus creadores favoritos y crea tu propia comunidad.</p>
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card-feature p-4 h-100 text-center">
+        <i class="bi bi-people"></i>
+        <h5 class="fw-bold mt-2">Conecta</h5>
+        <p class="mb-0">Sigue a tus creadores favoritos y crea tu propia comunidad.</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <h3>🖼️ Descubre Contenido</h3>
-      <p>Explora un universo de imágenes e inspiración nueva cada día.</p>
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="card-feature p-4 h-100 text-center">
+        <i class="bi bi-image"></i>
+        <h5 class="fw-bold mt-2">Descubre Contenido</h5>
+        <p class="mb-0">Explora un universo de imágenes e inspiración nueva cada día.</p>
+      </div>
     </div>
   </div>
 </section>

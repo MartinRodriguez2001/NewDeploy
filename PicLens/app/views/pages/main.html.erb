@@ -1,0 +1,67 @@
+<div class="container py-5">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+          <% if @user.profile_picture.attached? %>
+            <%= image_tag @user.profile_picture, class: "user-avatar-sm mb-3", style: "width: 80px; height: 80px;" %>
+          <% elsif @user.photo_profile.present? %>
+            <img src="<%= @user.photo_profile %>" class="user-avatar-sm mb-3" style="width: 80px; height: 80px;">
+          <% else %>
+            <i class="bi bi-person-circle" style="font-size: 80px;"></i>
+          <% end %>
+          <h4 class="fw-bold mt-2"><%= @user.user_name %></h4>
+          <p class="text-muted"><%= @user.email %></p>
+          <p><%= @user.bio %></p>
+          <%= link_to "Editar perfil", edit_user_path(@user), class: "btn btn-outline-primary btn-sm mt-2" %>
+        </div>
+      </div>
+      <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+          <h5>Seguidores</h5>
+          <p class="fs-4 fw-bold mb-0"><%= @followers.count %></p>
+          <ul class="list-unstyled">
+            <% @followers.limit(5).each do |f| %>
+              <li><%= f.follower.user_name %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5>Siguiendo</h5>
+          <p class="fs-4 fw-bold mb-0"><%= @following.count %></p>
+          <ul class="list-unstyled">
+            <% @following.limit(5).each do |f| %>
+              <li><%= f.followed.user_name %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Mis publicaciones</h5>
+        </div>
+        <div class="card-body">
+          <% if @posts.any? %>
+            <div class="row">
+              <% @posts.each do |post| %>
+                <div class="col-12 mb-3">
+                  <div class="post-card p-3">
+                    <h5 class="fw-bold mb-1"><%= link_to post.caption, post_path(post) %></h5>
+                    <p class="mb-1"><%= truncate(post.caption, length: 100) %></p>
+                    <span class="text-muted small"><%= time_ago_in_words(post.created_at) %> atrás</span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-muted">Aún no tienes publicaciones.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

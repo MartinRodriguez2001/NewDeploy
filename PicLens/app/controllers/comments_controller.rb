@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   before_action :set_post
   before_action :set_comment, only: %i[show edit update destroy]
-  before_action :require_login
+  before_action :require_user
 
   def index
     @comments = @post.comments.includes(:user)

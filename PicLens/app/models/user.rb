@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_secure_password
+
   has_one_attached :profile_picture
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
@@ -25,9 +27,46 @@ class User < ApplicationRecord
   has_many :reports_submitted, class_name: "Report", foreign_key: "reporter_id"
   has_many :reports_received, class_name: "Report", foreign_key: "reported_user_id"
   
-  validates :user_name, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true
-  validates :password, presence: true, length: { minimum: 6 }
+  validates :user_name, presence: true, 
+                       uniqueness: { case_sensitive: false },
+                       format: { with: /\A[a-zA-Z0-9_]+\z/, 
+                                message: "solo puede contener letras, números y guiones bajos" },
+                       length: { minimum: 3, maximum: 30 }
   
-  #has_secure_password
+  validates :email, presence: true,
+                   uniqueness: { case_sensitive: false },
+                   format: { with: URI::MailTo::EMAIL_REGEXP }
+  
+  validates :password, length: { minimum: 6 }, if: -> { new_record? || password.present? }
+  
+  before_save :downcase_email
+  before_save :downcase_user_name
+
+  def feed
+    following_ids = "SELECT followed_id FROM followers WHERE follower_id = :user_id"
+    Post.where("user_id IN (#{following_ids}) OR user_id = :user_id", user_id: id)
+        .order(created_at: :desc)
+  end
+
+  def follow(other_user)
+    following << other_user unless self == other_user
+  end
+
+  def unfollow(other_user)
+    following.delete(other_user)
+  end
+
+  def following?(other_user)
+    following.include?(other_user)
+  end
+
+  private
+
+  def downcase_email
+    self.email = email.downcase
+  end
+
+  def downcase_user_name
+    self.user_name = user_name.downcase
+  end
 end

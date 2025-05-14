@@ -1,0 +1,65 @@
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h1 class="fw-bold display-4" style="letter-spacing: 1px;">
+      ¡Bienvenido, <span class="gradient-text"><%= @user.user_name %></span>!
+    </h1>
+  </div>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+          <% if @user.profile_picture.attached? %>
+            <%= image_tag @user.profile_picture, class: "user-avatar-sm mb-3", style: "width: 80px; height: 80px; object-fit: cover; border-radius: 50%;" %>
+          <% elsif @user.photo_profile.present? %>
+            <img src="<%= @user.photo_profile %>" class="user-avatar-sm mb-3" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;">
+          <% else %>
+            <i class="bi bi-person-circle" style="font-size: 80px;"></i>
+          <% end %>
+          <h4 class="fw-bold mt-2"><%= @user.user_name %></h4>
+          <p class="text-muted"><%= @user.email %></p>
+          <p><%= @user.bio %></p>
+          <%= link_to "Editar perfil", edit_user_path(@user), class: "btn btn-outline-primary btn-sm mt-2" %>
+        </div>
+      </div>
+      <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+          <h5>Seguidores</h5>
+          <p class="fs-4 fw-bold mb-0"><%= @followers.count %></p>
+          <%= link_to "Ver todos", user_path(@user, anchor: 'followers'), class: "btn btn-link btn-sm" %>
+        </div>
+      </div>
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5>Siguiendo</h5>
+          <p class="fs-4 fw-bold mb-0"><%= @following.count %></p>
+          <%= link_to "Ver todos", user_path(@user, anchor: 'following'), class: "btn btn-link btn-sm" %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Tus publicaciones recientes</h5>
+        </div>
+        <div class="card-body">
+          <% if @recent_posts.any? %>
+            <ul class="list-group list-group-flush">
+              <% @recent_posts.each do |post| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= link_to truncate(post.caption, length: 40), post_path(post), class: "fw-bold" %>
+                  <span class="text-muted small"><%= time_ago_in_words(post.created_at) %> atrás</span>
+                </li>
+              <% end %>
+            </ul>
+            <div class="mt-3 text-end">
+              <%= link_to "Ver todas mis publicaciones", main_path, class: "btn btn-outline-secondary btn-sm" %>
+            </div>
+          <% else %>
+            <p class="text-muted">Aún no tienes publicaciones.</p>
+          <% end %>
+        </div>
+      </div>
+      <!-- Aquí puedes agregar más widgets: notificaciones, actividad, etc. -->
+    </div>
+  </div>
+</div> 

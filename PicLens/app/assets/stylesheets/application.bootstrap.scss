@@ -1,113 +1,82 @@
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
+@import "bootstrap/scss/bootstrap";
 
-// Variables de color
-$bg-gradient-start: #0a1930;
-$bg-gradient-end: #1e3a6a;
+// Custom styles
+:root {
+  --primary-color: #405DE6;
+  --secondary-color: #5851DB;
+  --accent-color: #833AB4;
+  --success-color: #4CAF50;
+  --danger-color: #E1306C;
+  --warning-color: #FCAF45;
+  --info-color: #00BCD4;
+}
 
-// Estilos personalizados para el fondo (sin recuadro)
+html, body {
+  height: 100%;
+}
+
 body {
-  background: linear-gradient(135deg, $bg-gradient-start, $bg-gradient-end);
-  color: #fff;
+  background: #232b3a !important;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-// Eliminar fondo diferenciado de las secciones
-.hero, .features {
-  background: transparent;
-  padding: 4rem 1rem;
+.main-content {
+  flex: 1 0 auto;
 }
 
-// Barra de navegación
-.navbar-brand {
-  font-size: 1.5rem;
+.navbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.footer {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 1rem 0;
+  background-color: #1a202c;
+  color: #fff;
+  text-align: center;
+  border-top: none;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #36d1c4, #5b86e5, #b06ab3, #f7971e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-weight: bold;
 }
 
+.card-feature {
+  background: #2d3648;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.card-feature:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  background: #3a4661;
+}
+
 .user-avatar-sm {
-  width: 25px;
-  height: 25px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.dropdown-menu {
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-// Footer
-.footer {
-  margin-top: 2rem;
-  padding: 1rem 0;
-  background-color: rgba(0,0,0,0.2);
-  color: #fff;
-  text-align: center;
-  width: 100%;
-}
-
-// Estilos para formularios y cards
-.card {
+.post-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   margin-bottom: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #333;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-  }
-}
-
-// Cartas interactivas para la página principal
-.feature-card {
-  transition: all 0.3s ease;
-  cursor: pointer;
-  background-color: rgba(51, 65, 85, 0.8);
-  
-  &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    background-color: rgba(59, 130, 246, 0.3);
-  }
-  
-  h3 {
-    transition: color 0.3s ease;
-  }
-  
-  &:hover h3 {
-    color: #4CAF50;
-  }
-}
-
-.auth-logo {
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.gradient-text {
-  background: linear-gradient(45deg, #2196F3, #4CAF50);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-// Botones interactivos
-.btn {
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  }
-}
-
-// Otros estilos existentes
-.navbar {
-  margin-bottom: 2rem;
+  overflow: hidden;
 }
 
 .post-image {
@@ -116,17 +85,27 @@ body {
   object-fit: cover;
 }
 
-.user-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
+.post-actions {
+  padding: 0.5rem;
+  border-top: 1px solid #dee2e6;
 }
 
-.hashtag {
-  color: #007bff;
+.hashtag-link {
+  color: var(--primary-color);
   text-decoration: none;
   &:hover {
     text-decoration: underline;
   }
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  background-color: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
 }

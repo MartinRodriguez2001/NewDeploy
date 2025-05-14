@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_login, except: [:new, :create]
+  before_action :require_user, except: [:new, :create]
   before_action :set_user, only: %i[show edit update destroy]
 
   def index
@@ -7,6 +7,9 @@ class UsersController < ApplicationController
   end
 
   def show
+    @posts = @user.posts.includes(:images, :likes, :comments).order(created_at: :desc)
+    @followers = @user.followers.includes(follower: [:profile_picture_attachment])
+    @following = @user.following.includes(:profile_picture_attachment)
   end
 
   def new
@@ -15,7 +18,6 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    # Valores predeterminados para bio y photo_profile
     @user.bio = "Usuario de PicLens"
     @user.photo_profile = "https://via.placeholder.com/150"
     
@@ -30,12 +32,11 @@ class UsersController < ApplicationController
   end
 
   def update
-    # Si se sube una nueva imagen, adjuntarla
     if params[:user][:profile_picture].present?
       @user.profile_picture.attach(params[:user][:profile_picture])
     end
     if @user.update(user_params.except(:profile_picture))
-      redirect_to @user, notice: 'Usuario actualizado correctamente.'
+      redirect_to main_path, notice: 'Usuario actualizado correctamente.'
     else
       render :edit
     end
@@ -53,7 +54,6 @@ class UsersController < ApplicationController
   end
   
   def user_params
-    # En el formulario solo permitir estos campos, pero mantener los demás para cuando se edita el perfil
     if action_name == 'create'
       params.require(:user).permit(:user_name, :email, :password)
     else

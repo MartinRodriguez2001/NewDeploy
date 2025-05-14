@@ -8,6 +8,11 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
@@ -22,12 +27,25 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
     
-
+    <style>
+      .user-avatar-sm {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      
+      .dropdown-menu {
+        margin-top: 0.5rem;
+      }
+    </style>
+    
+    <%= yield :styles %>
   </head>
 
   <body>
     <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgba(0,0,0,0.3);">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <%= link_to root_path, class: "navbar-brand" do %>
           <span class="gradient-text">PicLens</span>
@@ -50,26 +68,64 @@
                   <i class="bi bi-grid-3x3"></i> Explorar
                 <% end %>
               </li>
+              <li class="nav-item">
+                <%= link_to chats_path, class: "nav-link" do %>
+                  <i class="bi bi-chat-dots"></i> Chat
+                <% end %>
+              </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-bell"></i>
+                  <span class="notification-badge d-none">0</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end" style="width: 300px;">
+                  <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                    <h6 class="mb-0">Notificaciones</h6>
+                    <%= link_to "Ver todas", notifications_path, class: "btn btn-link btn-sm" %>
+                  </div>
+                  <div class="notification-list" style="max-height: 400px; overflow-y: auto;">
+                    <% if current_user && current_user.notifications.unread.any? %>
+                      <% current_user.notifications.unread.recent.limit(5).each do |notification| %>
+                        <div class="dropdown-item notification-item unread" data-notification-id="<%= notification.id %>">
+                          <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                              <p class="mb-1"><%= notification.message %></p>
+                              <small class="text-muted"><%= time_ago_in_words(notification.created_at) %></small>
+                            </div>
+                            <div class="notification-badge ms-2"></div>
+                          </div>
+                        </div>
+                      <% end %>
+                    <% else %>
+                      <div class="dropdown-item text-center text-muted py-3">
+                        No hay notificaciones nuevas
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <% if current_user.profile_picture.attached? %>
                     <%= image_tag current_user.profile_picture, class: "user-avatar-sm me-1", alt: "Avatar" %>
                   <% elsif current_user.photo_profile.present? %>
-                    <img src="<%= current_user.photo_profile %>" class="user-avatar-sm me-1" alt="Avatar">
+                    <% profile_url = current_user.photo_profile %>
+                    <% profile_url = "http://#{profile_url}" unless profile_url.start_with?('http://', 'https://') %>
+                    <img src="<%= profile_url %>" class="user-avatar-sm me-1" alt="Avatar">
                   <% else %>
-                    <i class="bi bi-person-circle"></i>
+                    <i class="bi bi-person-circle me-1"></i>
                   <% end %>
-                  <%= current_user.user_name %>
+                  <span><%= current_user.user_name %></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
-                    <%= link_to edit_user_path(current_user), class: "dropdown-item" do %>
-                      <i class="bi bi-person"></i> Mi Perfil
+                    <%= link_to user_path(current_user), class: "dropdown-item" do %>
+                      <i class="bi bi-person"></i> Mi perfil
                     <% end %>
                   </li>
                   <li>
-                    <%= link_to user_posts_path(current_user), class: "dropdown-item" do %>
-                      <i class="bi bi-images"></i> Mis publicaciones
+                    <%= link_to edit_user_path(current_user), class: "dropdown-item" do %>
+                      <i class="bi bi-gear"></i> Modificar perfil
                     <% end %>
                   </li>
                   <li><hr class="dropdown-divider"></li>
@@ -80,7 +136,7 @@
                   </li>
                 </ul>
               </li>
-            <% else %>
+            <% elsif !current_page?(root_path) %>
               <li class="nav-item">
                 <%= link_to "Iniciar Sesión", login_path, class: "nav-link" %>
               </li>
@@ -110,14 +166,41 @@
       <% end %>
     </div>
     
-    <div class="container py-4">
+    <div class="main-content container py-4">
       <%= yield %>
     </div>
     
-    <footer class="footer">
+    <footer class="footer mt-auto py-3 bg-dark text-white-50">
       <div class="container">
-        <p>&copy; <%= Date.today.year %> PicLens. Todos los derechos reservados.</p>
+        <p class="mb-0">&copy; <%= Date.today.year %> PicLens. Todos los derechos reservados.</p>
       </div>
     </footer>
+
+    <!-- Bootstrap JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+      // Inicializar todos los dropdowns de Bootstrap
+      document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar todos los dropdowns
+        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+          return new bootstrap.Dropdown(dropdownToggleEl)
+        })
+        
+        // Asegurarse de que el menú de usuario funcione correctamente
+        var userDropdown = document.getElementById('userDropdown')
+        if (userDropdown) {
+          userDropdown.addEventListener('click', function(event) {
+            event.preventDefault()
+            var dropdown = bootstrap.Dropdown.getInstance(userDropdown)
+            if (!dropdown) {
+              dropdown = new bootstrap.Dropdown(userDropdown)
+            }
+            dropdown.toggle()
+          })
+        }
+      })
+    </script>
   </body>
 </html>
