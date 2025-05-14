@@ -25,20 +25,8 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "users", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-    
-    <style>
-      .user-avatar-sm {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-      
-      .dropdown-menu {
-        margin-top: 0.5rem;
-      }
-    </style>
     
     <%= yield :styles %>
   </head>
@@ -169,36 +157,7 @@
 
     <!-- Bootstrap JS Bundle CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-        var dropdownList = Array.from(dropdownElementList).map(function(element) {
-          return new bootstrap.Dropdown(element);
-        });
-        
-        var notificationsDropdown = document.getElementById('notificationsDropdown');
-        if (notificationsDropdown) {
-          notificationsDropdown.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            var dropdownInstance = bootstrap.Dropdown.getInstance(notificationsDropdown);
-            if (!dropdownInstance) {
-              dropdownInstance = new bootstrap.Dropdown(notificationsDropdown);
-            }
-            
-            dropdownInstance.toggle();
-          });
-          
-          var notificationItems = document.querySelectorAll('.notification-item');
-          notificationItems.forEach(function(item) {
-            item.addEventListener('click', function(e) {
-              e.stopPropagation();
-            });
-          });
-        }
-      });
-    </script>
+    <%= javascript_include_tag "users", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "notifications", "data-turbo-track": "reload" %>
   </body>
 </html>

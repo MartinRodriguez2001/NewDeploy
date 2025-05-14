@@ -1,0 +1,49 @@
+.user-avatar-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-menu {
+  margin-top: 0.5rem;
+}
+
+/* Estilos para los avatares en la página de edición de usuario */
+.default-avatar {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  transition: all 0.2s;
+  padding: 2px;
+  display: inline-block;
+}
+
+.default-avatar:hover {
+  transform: scale(1.05);
+  border-color: #dee2e6;
+}
+
+.default-avatar.selected {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+}
+
+.default-avatar img {
+  border-radius: 50%;
+}
+
+.avatar-option img {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.avatar-option img:hover {
+  transform: scale(1.05);
+  border-color: #dee2e6;
+}
+
+.avatar-option input:checked + img {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+} 
