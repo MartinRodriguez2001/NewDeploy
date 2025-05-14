@@ -7,7 +7,6 @@ class UsersController < ApplicationController
   end
 
   def discover
-    # Excluye a los usuarios que ya sigues y a ti mismo
     @users = User.where.not(id: current_user.id)
                  .where.not(id: current_user.following.pluck(:id))
                  .order(created_at: :desc)
@@ -17,7 +16,6 @@ class UsersController < ApplicationController
   def show
     @posts = @user.posts.includes(:images, :likes, :comments).order(created_at: :desc)
     
-    # Cargar los seguidores y seguidos con includes para optimizar las consultas
     @followers = @user.passive_relationships.includes(follower: [:profile_picture_attachment])
     @following = @user.following
   end
@@ -29,7 +27,19 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.bio = "Usuario de PicLens"
-    @user.photo_profile = "https://via.placeholder.com/150"
+    
+    # Asignar un avatar predeterminado aleatorio al crear la cuenta
+    default_avatars = [
+      "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Aneka&backgroundColor=b6e3f4",
+      "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Felix&backgroundColor=d1d4f9",
+      "https://api.dicebear.com/6.x/micah/svg?seed=Coco&backgroundColor=b6e3f4",
+      "https://api.dicebear.com/6.x/micah/svg?seed=Daisy&backgroundColor=d1d4f9",
+      "https://api.dicebear.com/6.x/thumbs/svg?seed=Mia&backgroundColor=ffd5dc",
+      "https://api.dicebear.com/6.x/thumbs/svg?seed=Max&backgroundColor=c0aede",
+      "https://api.dicebear.com/6.x/avataaars/svg?seed=Zoe&backgroundColor=ffdfbf",
+      "https://api.dicebear.com/6.x/avataaars/svg?seed=Leo&backgroundColor=d1d4f9"
+    ]
+    @user.photo_profile = default_avatars.sample
     
     if @user.save
       session[:user_id] = @user.id
@@ -46,13 +56,34 @@ class UsersController < ApplicationController
   end
 
   def update
+    @user = User.find(params[:id])
+    
+    user_attrs = if params[:user][:password].present?
+                  user_params 
+                else
+                  user_params.except(:password)
+                end
+    
+    
+    if params[:remove_profile_picture] == '1' && @user.profile_picture.attached?
+      @user.profile_picture.purge
+    end
+    
+
     if params[:user][:profile_picture].present?
       @user.profile_picture.attach(params[:user][:profile_picture])
+      user_attrs = user_attrs.except(:photo_profile) 
+
+    elsif user_attrs[:photo_profile].present?
+      if @user.photo_profile != user_attrs[:photo_profile] && @user.profile_picture.attached?
+        @user.profile_picture.purge
+      end
     end
-    if @user.update(user_params.except(:profile_picture))
-      redirect_to main_path, notice: 'Usuario actualizado correctamente.'
+    
+    if @user.update(user_attrs)
+      redirect_to dashboard_path, notice: 'Perfil actualizado correctamente.'
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -71,7 +102,7 @@ class UsersController < ApplicationController
     if action_name == 'create'
       params.require(:user).permit(:user_name, :email, :password)
     else
-      params.require(:user).permit(:user_name, :email, :password, :bio, :photo_profile, :profile_picture)
+      params.require(:user).permit(:user_name, :email, :password, :bio, :photo_profile)
     end
   end
 end

@@ -28,6 +28,9 @@ Rails.application.routes.draw do
   resources :notifications
   resources :activity_histories, only: [:index, :show, :destroy]
 
+  post 'notifications/mark_all_as_read', to: 'notifications#mark_all_as_read', as: :mark_all_as_read_notifications
+  post 'notifications/:id/mark_as_read', to: 'notifications#mark_as_read', as: :mark_as_read_notification
+
   resources :chats, only: [:index, :show]
   post 'send_message', to: 'chats#create'
   

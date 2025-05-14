@@ -19,7 +19,6 @@ class ChatsController < ApplicationController
     @message = current_user.sent_messages.build(message_params)
     @message.receiver = @user
     
-    # Buscar o crear un chat entre los usuarios
     chat = Chat.find_or_create_by(
       user_id1: [current_user.id, @user.id].min,
       user_id2: [current_user.id, @user.id].max

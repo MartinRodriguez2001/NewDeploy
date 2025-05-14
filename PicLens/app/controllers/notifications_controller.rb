@@ -12,7 +12,35 @@ class NotificationsController < ApplicationController
 
   def show
     @notification.mark_as_read! unless @notification.read?
-    redirect_to @notification.notifiable
+    
+    case @notification.notification_type
+    when 'message'
+      message = @notification.notifiable
+      if message.present? && message.sender.present?
+        redirect_to chat_path(message.sender)
+      else
+        redirect_to chats_path, alert: "El mensaje ya no está disponible"
+      end
+    when 'follow'
+      follow = @notification.notifiable
+      if follow.present? && follow.follower.present?
+        redirect_to user_path(follow.follower)
+      else
+        redirect_to dashboard_path, alert: "El usuario ya no está disponible"
+      end
+    when 'like', 'comment'
+      interaction = @notification.notifiable
+      if interaction.present? && interaction.post.present?
+        redirect_to post_path(interaction.post)
+      else
+        redirect_to posts_path, alert: "La publicación ya no está disponible"
+      end
+    else
+      redirect_to dashboard_path
+    end
+  rescue StandardError => e
+    Rails.logger.error("Error al redirigir notificación: #{e.message}")
+    redirect_to notifications_path, alert: "No se pudo cargar el contenido relacionado con esta notificación."
   end
 
   def mark_as_read

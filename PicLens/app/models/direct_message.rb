@@ -12,20 +12,21 @@ class DirectMessage < ApplicationRecord
       .order(created_at: :asc)
   }
   
-  after_create_commit :broadcast_message
+  # Comentamos este callback para evitar errores con ApplicationCable
+  # after_create_commit :broadcast_message
   
   private
   
-  def broadcast_message
-    DirectMessageChannel.broadcast_to(
-      [sender, receiver],
-      {
-        id: id,
-        content: content,
-        sender_id: sender_id,
-        receiver_id: receiver_id,
-        created_at: created_at
-      }
-    )
-  end
+  # def broadcast_message
+  #   DirectMessageChannel.broadcast_to(
+  #     [sender, receiver],
+  #     {
+  #       id: id,
+  #       content: content,
+  #       sender_id: sender_id,
+  #       receiver_id: receiver_id,
+  #       created_at: created_at
+  #     }
+  #   )
+  # end
 end 

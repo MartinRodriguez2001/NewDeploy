@@ -69,16 +69,89 @@
               <%= f.label :bio, "Biografía", class: "form-label" %>
               <%= f.text_area :bio, class: "form-control", rows: 3, placeholder: "Cuéntanos algo sobre ti..." %>
           </div>
+          
           <div class="mb-3">
-              <%= f.label :photo_profile, "URL de la foto de perfil", class: "form-label" %>
-              <%= f.text_field :photo_profile, class: "form-control", placeholder: "https://..." %>
-              <small class="form-text text-muted">Si subes una imagen, tendrá prioridad sobre la URL.</small>
+            <label class="form-label fw-bold">Opciones de foto de perfil</label>
+            
+            <div class="row g-3">
+              <!-- Opción 1: URL de imagen personalizada -->
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-header bg-light">
+                    <h6 class="mb-0">URL de imagen personalizada</h6>
+                  </div>
+                  <div class="card-body">
+                    <p class="small mb-2">Ingresa una URL pública de imagen:</p>
+                    <%= text_field_tag 'user[photo_profile]', @user.photo_profile, 
+                                    class: "form-control", 
+                                    placeholder: "https://...",
+                                    id: "custom_photo_url" %>
+                    <small class="form-text text-muted">Si ingresas una URL, tendrá prioridad sobre los avatares predefinidos.</small>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Opción 2: Avatares predeterminados -->
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-header bg-light">
+                    <h6 class="mb-0">Avatar predeterminado</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                      <% default_avatars = [
+                        "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Aneka&backgroundColor=b6e3f4",
+                        "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Felix&backgroundColor=d1d4f9",
+                        "https://api.dicebear.com/6.x/micah/svg?seed=Coco&backgroundColor=b6e3f4",
+                        "https://api.dicebear.com/6.x/micah/svg?seed=Daisy&backgroundColor=d1d4f9",
+                        "https://api.dicebear.com/6.x/thumbs/svg?seed=Mia&backgroundColor=ffd5dc",
+                        "https://api.dicebear.com/6.x/thumbs/svg?seed=Max&backgroundColor=c0aede",
+                        "https://api.dicebear.com/6.x/avataaars/svg?seed=Zoe&backgroundColor=ffdfbf",
+                        "https://api.dicebear.com/6.x/avataaars/svg?seed=Leo&backgroundColor=d1d4f9"
+                      ] %>
+                      
+                      <% default_avatars.each_with_index do |avatar_url, index| %>
+                        <div class="avatar-option">
+                          <label for="avatar_<%= index %>">
+                            <%= radio_button_tag "user[photo_profile]", avatar_url, (@user.photo_profile == avatar_url), 
+                                                id: "avatar_#{index}", class: "d-none" %>
+                            <img src="<%= avatar_url %>" class="rounded-circle" 
+                                 style="width: 50px; height: 50px; border: 2px solid <%= @user.photo_profile == avatar_url ? '#0d6efd' : 'transparent' %>;">
+                          </label>
+                        </div>
+                      <% end %>
+                    </div>
+                    <small class="form-text text-muted mt-2">Haz clic en un avatar para seleccionarlo.</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-header bg-light">
+                    <h6 class="mb-0">Subir foto</h6>
+                  </div>
+                  <div class="card-body">
+                    <%= f.file_field :profile_picture, class: "form-control", accept: "image/*" %>
+                    <small class="form-text text-muted">Esta opción tendrá prioridad sobre las demás.</small>
+                    
+                    <% if @user.profile_picture.attached? %>
+                      <div class="text-center mt-2">
+                        <p class="small text-muted">Imagen actual:</p>
+                        <%= image_tag @user.profile_picture, class: "rounded-circle mb-2", style: "width: 60px; height: 60px; object-fit: cover;" %>
+                        <div class="form-check mt-1">
+                          <%= check_box_tag :remove_profile_picture, '1', false, class: "form-check-input" %>
+                          <%= label_tag :remove_profile_picture, "Eliminar imagen", class: "form-check-label text-danger" %>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="mb-3">
-              <%= f.label :profile_picture, "O subir foto de perfil desde tu dispositivo", class: "form-label" %>
-            <%= f.file_field :profile_picture, class: "form-control" %>
-          </div>
-          <div class="text-end">
+          
+          <div class="text-end mt-4">
             <%= link_to "Cancelar", user_path(@user), class: "btn btn-outline-secondary me-2" %>
             <%= f.submit "Guardar cambios", class: "btn btn-primary" %>
           </div>
@@ -88,3 +161,83 @@
     </div>
   </div>
 </div>
+
+<style>
+  .default-avatar {
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    transition: all 0.2s;
+    padding: 2px;
+    display: inline-block;
+  }
+  
+  .default-avatar:hover {
+    transform: scale(1.05);
+    border-color: #dee2e6;
+  }
+  
+  .default-avatar.selected {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+  }
+  
+  .default-avatar img {
+    border-radius: 50%;
+  }
+  
+  .avatar-option img {
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .avatar-option img:hover {
+    transform: scale(1.05);
+    border-color: #dee2e6;
+  }
+  
+  .avatar-option input:checked + img {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const avatarRadios = document.querySelectorAll('input[name="user[photo_profile]"]');
+    const urlInput = document.getElementById('custom_photo_url');
+    const fileInput = document.getElementById('user_profile_picture');
+    
+    avatarRadios.forEach(radio => {
+      if (radio.id !== 'custom_photo_url') {
+        radio.addEventListener('change', function() {
+          if (this.checked) {
+            urlInput.value = this.value;
+          }
+        });
+      }
+    });
+    
+    urlInput.addEventListener('input', function() {
+      avatarRadios.forEach(radio => {
+        if (radio.id !== 'custom_photo_url') {
+          radio.checked = false;
+        }
+      });
+    });
+    
+    if (fileInput) {
+      fileInput.addEventListener('change', function() {
+        if (this.value) {
+          urlInput.value = '';
+          avatarRadios.forEach(radio => {
+            if (radio.id !== 'custom_photo_url') {
+              radio.checked = false;
+            }
+          });
+        }
+      });
+    }
+  });
+</script>
+

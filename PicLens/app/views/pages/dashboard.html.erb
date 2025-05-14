@@ -1,7 +1,7 @@
 <div class="container py-5">
   <div class="text-center mb-5">
-    <h1 class="fw-bold display-4" style="letter-spacing: 1px;">
-      ¡Bienvenido, <span class="gradient-text"><%= @user.user_name %></span>!
+    <h1 class="fw-bold display-4 gradient-text" style="letter-spacing: 1px;">
+      ¡Bienvenido, <%= @user.user_name %>!
     </h1>
   </div>
   <div class="row g-4">
@@ -11,7 +11,9 @@
           <% if @user.profile_picture.attached? %>
             <%= image_tag @user.profile_picture, class: "user-avatar-sm mb-3", style: "width: 80px; height: 80px; object-fit: cover; border-radius: 50%;" %>
           <% elsif @user.photo_profile.present? %>
-            <img src="<%= @user.photo_profile %>" class="user-avatar-sm mb-3" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;">
+            <% profile_url = @user.photo_profile %>
+            <% profile_url = "http://#{profile_url}" unless profile_url.start_with?('http://', 'https://') %>
+            <img src="<%= profile_url %>" class="user-avatar-sm mb-3" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;">
           <% else %>
             <i class="bi bi-person-circle" style="font-size: 80px;"></i>
           <% end %>
@@ -78,7 +80,9 @@
                       <% if user.profile_picture.attached? %>
                         <%= image_tag user.profile_picture, class: "rounded-circle mb-2", style: "width: 60px; height: 60px; object-fit: cover;" %>
                       <% elsif user.photo_profile.present? %>
-                        <img src="<%= user.photo_profile %>" class="rounded-circle mb-2" style="width: 60px; height: 60px; object-fit: cover;">
+                        <% profile_url = user.photo_profile %>
+                        <% profile_url = "http://#{profile_url}" unless profile_url.start_with?('http://', 'https://') %>
+                        <img src="<%= profile_url %>" class="rounded-circle mb-2" style="width: 60px; height: 60px; object-fit: cover;">
                       <% else %>
                         <i class="bi bi-person-circle mb-2" style="font-size: 60px;"></i>
                       <% end %>

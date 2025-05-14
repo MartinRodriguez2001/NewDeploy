@@ -60,6 +60,11 @@ class User < ApplicationRecord
     following.include?(other_user)
   end
 
+  def update_without_password(params)
+    params.delete(:password) if params[:password].blank?
+    update(params)
+  end
+
   private
 
   def downcase_email

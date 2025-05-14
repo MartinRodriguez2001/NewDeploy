@@ -4,8 +4,10 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Notificaciones</h2>
         <% if @notifications.unread.any? %>
-          <%= button_to mark_all_as_read_notifications_path, method: :post, class: "btn btn-outline-primary" do %>
-            <i class="bi bi-check2-all"></i> Marcar todas como leídas
+          <%= form_tag mark_all_as_read_notifications_path, method: :post do %>
+            <button type="submit" class="btn btn-outline-primary">
+              <i class="bi bi-check2-all"></i> Marcar todas como leídas
+            </button>
           <% end %>
         <% end %>
       </div>
@@ -18,6 +20,16 @@
                 <div class="d-flex justify-content-between align-items-start">
                   <div>
                     <p class="card-text mb-1">
+                      <% case notification.notification_type %>
+                      <% when 'follow' %>
+                        <i class="bi bi-person-plus text-primary me-2"></i>
+                      <% when 'like' %>
+                        <i class="bi bi-heart text-danger me-2"></i>
+                      <% when 'comment' %>
+                        <i class="bi bi-chat-text text-success me-2"></i>
+                      <% when 'message' %>
+                        <i class="bi bi-envelope text-info me-2"></i>
+                      <% end %>
                       <%= notification.message %>
                     </p>
                     <small class="text-muted">
@@ -31,9 +43,11 @@
                 <div class="mt-2">
                   <%= link_to "Ver", notification_path(notification), class: "btn btn-sm btn-outline-primary" %>
                   <% unless notification.read? %>
-                    <%= button_to "Marcar como leída", mark_as_read_notification_path(notification), 
-                                method: :post, 
-                                class: "btn btn-sm btn-outline-secondary" %>
+                    <%= form_tag mark_as_read_notification_path(notification), method: :post, class: "d-inline" do %>
+                      <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        Marcar como leída
+                      </button>
+                    <% end %>
                   <% end %>
                 </div>
               </div>
@@ -53,7 +67,3 @@
     </div>
   </div>
 </div>
-
-<%= content_for :head do %>
-  <%= javascript_include_tag "notifications", "data-turbo-track": "reload" %>
-<% end %>

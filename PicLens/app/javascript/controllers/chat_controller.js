@@ -7,7 +7,6 @@ export default class extends Controller {
     console.log("Chat controller connected")
     this.scrollToBottom()
     
-    // Interceptar el envío del formulario para manejar la respuesta
     if (this.hasFormTarget) {
       this.formTarget.addEventListener('ajax:success', this.handleSuccess.bind(this))
     }
@@ -25,7 +24,6 @@ export default class extends Controller {
       this.inputTarget.focus()
     }
     
-    // Esperar un momento para que el mensaje se añada al DOM antes de hacer scroll
     setTimeout(() => {
       this.scrollToBottom()
     }, 100)

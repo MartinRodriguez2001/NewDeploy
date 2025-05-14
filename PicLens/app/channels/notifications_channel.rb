@@ -1,6 +1,8 @@
 class NotificationsChannel < ApplicationCable::Channel
   def subscribed
-    stream_for current_user if logged_in?
+    if current_user
+      stream_for current_user
+    end
   end
  
   def unsubscribed
