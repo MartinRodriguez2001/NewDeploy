@@ -21,8 +21,8 @@
           <h5>Seguidores</h5>
           <p class="fs-4 fw-bold mb-0"><%= @followers.count %></p>
           <ul class="list-unstyled">
-            <% @followers.limit(5).each do |f| %>
-              <li><%= f.follower.user_name %></li>
+            <% @followers.limit(5).each do |user| %>
+            <li><%= user.user_name %></li>
             <% end %>
           </ul>
         </div>
@@ -32,8 +32,8 @@
           <h5>Siguiendo</h5>
           <p class="fs-4 fw-bold mb-0"><%= @following.count %></p>
           <ul class="list-unstyled">
-            <% @following.limit(5).each do |f| %>
-              <li><%= f.followed.user_name %></li>
+            <% @following.limit(5).each do |user| %>
+              <li><%= user.user_name %></li>
             <% end %>
           </ul>
         </div>
