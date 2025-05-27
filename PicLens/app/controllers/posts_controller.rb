@@ -3,10 +3,24 @@ class PostsController < ApplicationController
   before_action :require_user, except: [:index, :show]
 
   def index
-    @posts = Post.includes(:user, :images, :likes, :comments, :hashtags)
-                .order(created_at: :desc)
-                .page(params[:page])
-                .per(12)
+    if params[:q].present?
+      @users = User.where("user_name ILIKE ?", "%#{params[:q]}%")
+      hashtag = Hashtag.find_by(tag: params[:q].downcase)
+      posts_by_hashtag = hashtag ? hashtag.posts : Post.none
+      posts_by_caption = Post.where("caption ILIKE ?", "%#{params[:q]}%")
+      @posts = (posts_by_hashtag + posts_by_caption).uniq
+      @posts = Post.where(id: @posts.map(&:id)).includes(:user, :images, :likes, :comments, :hashtags).order(created_at: :desc).page(params[:page]).per(12)
+    elsif logged_in?
+      @posts = Post.includes(:user, :images, :likes, :comments, :hashtags)
+                   .order('RANDOM()')
+                   .page(params[:page])
+                   .per(12)
+    else
+      @posts = Post.includes(:user, :images, :likes, :comments, :hashtags)
+                   .order(created_at: :desc)
+                   .page(params[:page])
+                   .per(12)
+    end
   end
 
   def show

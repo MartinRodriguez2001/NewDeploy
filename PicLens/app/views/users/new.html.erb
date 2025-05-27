@@ -1,33 +1,48 @@
 <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-  <div class="card shadow p-4" style="min-width: 350px; max-width: 400px;">
+  <div class="card shadow p-4" style="min-width: 350px; max-width: 400px;" data-controller="form-validation">
     <div class="text-center mb-3">
       <span class="gradient-text fs-2 fw-bold">PicLens</span>
     </div>
     <h3 class="text-center mb-4">Crear cuenta</h3>
-    <% if @user.errors.any? %>
-      <div class="alert alert-danger">
-        <ul class="mb-0">
-          <% @user.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
+    
+    <%= form_with(model: @user, local: true, html: { id: "user-form", data: { form_validation_target: "form", action: "submit->form-validation#validateForm" } }) do |f| %>
+      
+      <% if @user.errors.any? %>
+        <div class="alert alert-danger" role="alert">
+          <h5>Corrige los siguientes errores:</h5>
+          <ul class="mb-0">
+            <% @user.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      
+      <div class="mb-3" role="group" aria-labelledby="username-label">
+        <%= f.label :user_name, "Nombre de usuario", id: "username-label", class: "form-label" %>
+        <%= f.text_field :user_name, class: "form-control", required: true, aria_required: "true", aria_describedby: "username-help username-error", data: { form_validation_target: "field" }, id: "user-username" %>
+        <div id="username-help" class="form-text">3-30 caracteres, solo letras, números y guiones bajos</div>
+        <div id="username-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
+      </div>
+      
+      <div class="mb-3" role="group" aria-labelledby="email-label">
+        <%= f.label :email, "Email", id: "email-label", class: "form-label" %>
+        <%= f.email_field :email, class: "form-control", required: true, aria_required: "true", aria_describedby: "email-error", data: { form_validation_target: "field" }, id: "user-email" %>
+        <div id="email-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
+      </div>
+      
+      <div class="mb-3" role="group" aria-labelledby="password-label">
+        <%= f.label :password, "Contraseña", id: "password-label", class: "form-label" %>
+        <%= f.password_field :password, class: "form-control", required: true, aria_required: "true", aria_describedby: "password-help password-error", data: { form_validation_target: "field" }, id: "user-password" %>
+        <div id="password-help" class="form-text">Mínimo 6 caracteres</div>
+        <div id="password-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
+      </div>
+      
+      <div class="form-actions mt-4">
+        <%= f.submit "Registrarse", class: "btn btn-success w-100 fw-bold", data: { form_validation_target: "submit" } %>
       </div>
     <% end %>
-    <%= form_with model: @user, local: true do |f| %>
-      <div class="mb-3">
-        <%= f.label :user_name, "Nombre de usuario", class: "form-label" %>
-        <%= f.text_field :user_name, class: "form-control", required: true %>
-      </div>
-      <div class="mb-3">
-        <%= f.label :email, "Email", class: "form-label" %>
-        <%= f.email_field :email, class: "form-control", required: true %>
-      </div>
-      <div class="mb-3">
-        <%= f.label :password, "Contraseña", class: "form-label" %>
-        <%= f.password_field :password, class: "form-control", required: true %>
-      </div>
-      <%= f.submit "Registrarse", class: "btn btn-success w-100 fw-bold" %>
-    <% end %>
+    
     <div class="text-center mt-3">
       ¿Ya tienes cuenta?
       <%= link_to "Inicia sesión", login_path, class: "fw-bold" %>

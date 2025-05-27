@@ -28,7 +28,6 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     @user.bio = "Usuario de PicLens"
     
-    # Asignar un avatar predeterminado aleatorio al crear la cuenta
     default_avatars = [
       "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Aneka&backgroundColor=b6e3f4",
       "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Felix&backgroundColor=d1d4f9",
@@ -46,7 +45,7 @@ class UsersController < ApplicationController
       @user.update(last_login_at: Time.current)
       
       flash[:notice] = "¡Bienvenido a PicLens, #{@user.user_name}! Tu cuenta ha sido creada exitosamente."
-      redirect_to dashboard_path
+      redirect_to main_path
     else
       render :new, status: :unprocessable_entity
     end

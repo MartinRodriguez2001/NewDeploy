@@ -1,67 +1,68 @@
 <div class="container py-5">
+  <h2 class="mb-4 text-center gradient-text">Tu feed</h2>
   <div class="row g-4">
-    <div class="col-md-4">
-      <div class="card shadow-sm mb-4">
-        <div class="card-body text-center">
-          <% if @user.profile_picture.attached? %>
-            <%= image_tag @user.profile_picture, class: "user-avatar-sm mb-3", style: "width: 80px; height: 80px;" %>
-          <% elsif @user.photo_profile.present? %>
-            <img src="<%= @user.photo_profile %>" class="user-avatar-sm mb-3" style="width: 80px; height: 80px;">
-          <% else %>
-            <i class="bi bi-person-circle" style="font-size: 80px;"></i>
-          <% end %>
-          <h4 class="fw-bold mt-2"><%= @user.user_name %></h4>
-          <p class="text-muted"><%= @user.email %></p>
-          <p><%= @user.bio %></p>
-          <%= link_to "Editar perfil", edit_user_path(@user), class: "btn btn-outline-primary btn-sm mt-2" %>
-        </div>
-      </div>
-      <div class="card shadow-sm mb-4">
-        <div class="card-body text-center">
-          <h5>Seguidores</h5>
-          <p class="fs-4 fw-bold mb-0"><%= @followers.count %></p>
-          <ul class="list-unstyled">
-            <% @followers.limit(5).each do |user| %>
-            <li><%= user.user_name %></li>
+    <% if @posts.any? %>
+      <% @posts.each do |post| %>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card post-card h-100">
+            <% if post.images.any? %>
+              <% if post.images.first.image_url.present? %>
+                <% image_url = post.images.first.image_url %>
+                <% image_url = "http://#{image_url}" unless image_url.start_with?('http://', 'https://') %>
+                <img src="<%= image_url %>" class="card-img-top post-image" alt="Imagen del post">
+              <% elsif post.images.first.file.attached? %>
+                <%= image_tag url_for(post.images.first.file), class: "card-img-top post-image", alt: "Imagen del post" %>
+              <% end %>
             <% end %>
-          </ul>
-        </div>
-      </div>
-      <div class="card shadow-sm">
-        <div class="card-body text-center">
-          <h5>Siguiendo</h5>
-          <p class="fs-4 fw-bold mb-0"><%= @following.count %></p>
-          <ul class="list-unstyled">
-            <% @following.limit(5).each do |user| %>
-              <li><%= user.user_name %></li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-8">
-      <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Mis publicaciones</h5>
-        </div>
-        <div class="card-body">
-          <% if @posts.any? %>
-            <div class="row">
-              <% @posts.each do |post| %>
-                <div class="col-12 mb-3">
-                  <div class="post-card p-3">
-                    <h5 class="fw-bold mb-1"><%= link_to post.caption, post_path(post) %></h5>
-                    <p class="mb-1"><%= truncate(post.caption, length: 100) %></p>
-                    <span class="text-muted small"><%= time_ago_in_words(post.created_at) %> atrás</span>
-                  </div>
+            <div class="card-body">
+              <h5 class="card-title fw-bold">
+                <%= link_to post.caption, post_path(post), class: "text-decoration-none" %>
+              </h5>
+              <% if post.hashtags.any? %>
+                <div class="mt-2 mb-3">
+                  <% post.hashtags.each do |hashtag| %>
+                    <span class="badge bg-primary me-1 mb-1">#<%= hashtag.tag %></span>
+                  <% end %>
                 </div>
               <% end %>
+              <div class="d-flex align-items-center mt-3 mb-2">
+                <% if post.user.profile_picture.attached? %>
+                  <%= image_tag post.user.profile_picture, class: "user-avatar-sm me-2" %>
+                <% elsif post.user.photo_profile.present? %>
+                  <% profile_url = post.user.photo_profile %>
+                  <% profile_url = "http://#{profile_url}" unless profile_url.start_with?('http://', 'https://') %>
+                  <img src="<%= profile_url %>" class="user-avatar-sm me-2">
+                <% else %>
+                  <i class="bi bi-person-circle me-2" style="font-size: 1.5rem;"></i>
+                <% end %>
+                <span class="fw-bold"><%= post.user.user_name %></span>
+              </div>
+              <div class="d-flex gap-2 mt-2">
+                <%= button_to post_likes_path(post), method: :post, class: "btn btn-outline-danger btn-sm px-3" do %>
+                  <i class="bi bi-heart"></i> <%= post.likes.count %>
+                <% end %>
+                <%= link_to post_path(post, anchor: 'comments'), class: "btn btn-outline-primary btn-sm px-3" do %>
+                  <i class="bi bi-chat"></i> <%= post.comments.count %>
+                <% end %>
+              </div>
             </div>
-          <% else %>
-            <p class="text-muted">Aún no tienes publicaciones.</p>
-          <% end %>
+            <div class="card-footer text-muted small">
+              <%= time_ago_in_words(post.created_at) %> atrás
+            </div>
+          </div>
         </div>
+      <% end %>
+    <% else %>
+      <div class="col-12">
+        <div class="alert alert-info text-center">No hay publicaciones para mostrar.</div>
       </div>
-    </div>
+    <% end %>
+  </div>
+  <div class="my-4 d-flex justify-content-center">
+    <nav aria-label="Paginación de publicaciones">
+      <ul class="pagination pagination-lg">
+        <%= paginate @posts %>
+      </ul>
+    </nav>
   </div>
 </div> 

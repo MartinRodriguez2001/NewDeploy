@@ -1,11 +1,23 @@
-<div class="card shadow">
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <span class="badge bg-light text-dark fs-5 py-2 px-3"><%= link_to "Inicio", main_path, class: "text-decoration-none text-dark" %></span>
+    </li>
+    
+    <li class="breadcrumb-item active"><span class="badge bg-primary fs-5 py-2 px-3">Nuevo Post</span></li>
+  </ol>
+</nav>
+
+<div class="card shadow" data-controller="form-validation">
   <div class="card-header">
     <h2>Crear nueva publicación</h2>
   </div>
   <div class="card-body">
-    <%= form_with model: @post, local: true, html: { multipart: true, id: "post-form" } do |f| %>
+    <%= form_with(model: @post, local: true, html: { multipart: true, id: "post-form", data: { form_validation_target: "form", action: "submit->form-validation#validateForm" } }) do |f| %>
+      
       <% if @post.errors.any? %>
-        <div class="alert alert-danger">
+        <div class="alert alert-danger" role="alert">
+          <h5>Corrige los siguientes errores:</h5>
           <ul class="mb-0">
             <% @post.errors.full_messages.each do |msg| %>
               <li><%= msg %></li>
@@ -14,14 +26,16 @@
         </div>
       <% end %>
       
-      <div class="mb-3">
-        <%= f.label :caption, "Descripción" %>
-        <%= f.text_area :caption, class: "form-control", rows: 3, required: true %>
+      <div class="mb-3" role="group" aria-labelledby="caption-label">
+        <%= f.label :caption, "Descripción", id: "caption-label", class: "form-label" %>
+        <%= f.text_area :caption, class: "form-control", rows: 3, required: true, aria_required: "true", aria_describedby: "caption-error", data: { form_validation_target: "field" }, id: "post-caption" %>
+        <div id="caption-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
       </div>
       
-      <div class="mb-3">
-        <%= f.label :location, "Ubicación (opcional)" %>
-        <%= f.text_field :location, class: "form-control" %>
+      <div class="mb-3" role="group" aria-labelledby="location-label">
+        <%= f.label :location, "Ubicación (opcional)", id: "location-label", class: "form-label" %>
+        <%= f.text_field :location, class: "form-control", aria_describedby: "location-help", data: { form_validation_target: "field" }, id: "post-location" %>
+        <div id="location-help" class="form-text">Ejemplo: Ciudad, País</div>
       </div>
       
       <div class="card mb-3">
@@ -29,34 +43,33 @@
           <h5>Imagen de la publicación</h5>
         </div>
         <div class="card-body">
-          <div class="mb-3">
-            <%= f.label :image_url, "URL de la imagen" %>
-            <%= f.text_field :image_url, class: "form-control", placeholder: "https://ejemplo.com/imagen.jpg" %>
-            <div class="form-text">Puedes usar cualquier URL de imagen pública de internet</div>
+          <div class="mb-3" role="group" aria-labelledby="image-url-label">
+            <%= f.label :image_url, "URL de la imagen", id: "image-url-label", class: "form-label" %>
+            <%= f.text_field :image_url, class: "form-control", placeholder: "https://ejemplo.com/imagen.jpg", aria_describedby: "image-url-help", data: { form_validation_target: "field" }, id: "post-image-url" %>
+            <div id="image-url-help" class="form-text">Puedes usar cualquier URL de imagen pública de internet</div>
           </div>
           
           <div class="mb-3">
             <p class="text-center">- O -</p>
           </div>
           
-          <div class="mb-3">
-            <%= f.label :file, "Subir imagen desde tu dispositivo" %>
-            <%= f.file_field :file, class: "form-control", accept: "image/*" %>
+          <div class="mb-3" role="group" aria-labelledby="file-label">
+            <%= f.label :file, "Subir imagen desde tu dispositivo", id: "file-label", class: "form-label" %>
+            <%= f.file_field :file, class: "form-control", accept: "image/*", aria_describedby: "file-help", data: { form_validation_target: "field" }, id: "post-file" %>
+            <div id="file-help" class="form-text">Formatos aceptados: JPG, PNG, GIF</div>
           </div>
         </div>
       </div>
       
-      <div class="mb-3">
-        <%= f.label :hashtag_list, "Hashtags (opcional)" %>
-        <%= f.text_field :hashtag_list, class: "form-control", placeholder: "Escribe hashtags separados por comas (sin #)" %>
-        <div class="form-text">Ejemplo: naturaleza, viajes, comida</div>
+      <div class="mb-3" role="group" aria-labelledby="hashtags-label">
+        <%= f.label :hashtag_list, "Hashtags (opcional)", id: "hashtags-label", class: "form-label" %>
+        <%= f.text_field :hashtag_list, class: "form-control", placeholder: "Escribe hashtags separados por comas (sin #)", aria_describedby: "hashtags-help", data: { form_validation_target: "field" }, id: "post-hashtags" %>
+        <div id="hashtags-help" class="form-text">Ejemplo: naturaleza, viajes, comida</div>
       </div>
       
-      <%= f.hidden_field :user_id, value: current_user.id %>
-      
-      <div class="text-end">
-        <%= link_to "Cancelar", posts_path, class: "btn btn-outline-secondary me-2" %>
-        <%= f.submit "Publicar", class: "btn btn-success" %>
+      <div class="form-actions mt-4">
+        <%= f.submit "Crear publicación", class: "btn btn-primary", data: { form_validation_target: "submit" } %>
+        <%= link_to "Cancelar", posts_path, class: "btn btn-secondary ms-2" %>
       </div>
     <% end %>
   </div>

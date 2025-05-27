@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       user.update(last_login_at: Time.current)
       flash[:notice] = "¡Bienvenido de nuevo, #{user.user_name}!"
-      redirect_to dashboard_path
+      redirect_to main_path
     else
       flash.now[:alert] = "Email o contraseña incorrectos"
       render :new, status: :unprocessable_entity

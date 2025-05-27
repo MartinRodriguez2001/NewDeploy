@@ -17,7 +17,17 @@ class PagesController < ApplicationController
 
   def main
     @user = current_user
-    @posts = current_user.posts.order(created_at: :desc)
+    following_ids = current_user.following.pluck(:id)
+    if following_ids.any?
+      @posts = Post.includes(:user, :images, :likes, :comments, :hashtags)
+                   .where(user_id: following_ids)
+                   .order(created_at: :desc)
+                   .page(params[:page]).per(12)
+    else
+      @posts = Post.includes(:user, :images, :likes, :comments, :hashtags)
+                   .order('RANDOM()')
+                   .page(params[:page]).per(12)
+    end
     @followers = current_user.followers
     @following = current_user.following
   end

@@ -1,162 +1,85 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-4 mb-4">
-      <div class="card shadow">
-        <div class="card-body text-center">
-          <% if @user.profile_picture.attached? %>
-            <%= image_tag @user.profile_picture, class: "img-fluid rounded-circle mb-3", style: "width: 150px; height: 150px; object-fit: cover;" %>
-          <% elsif @user.photo_profile.present? %>
-            <% profile_url = @user.photo_profile %>
-            <% profile_url = "http://#{profile_url}" unless profile_url.start_with?('http://', 'https://') %>
-            <img src="<%= profile_url %>" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-          <% else %>
-            <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 150px; height: 150px;">
-              <i class="bi bi-person-circle" style="font-size: 80px;"></i>
-            </div>
-          <% end %>
-          <h3 class="fw-bold"><%= @user.user_name %></h3>
-          <p class="text-muted"><%= @user.email %></p>
-          <p><%= @user.bio %></p>
-          
-          <hr>
-          <div class="d-flex justify-content-around text-center">
-            <div>
-              <h5><%= @user.posts.count %></h5>
-              <small class="text-muted">Publicaciones</small>
-            </div>
-            <div>
-              <h5><%= @user.followers.count %></h5>
-              <small class="text-muted">Seguidores</small>
-            </div>
-            <div>
-              <h5><%= @user.following.count %></h5>
-              <small class="text-muted">Siguiendo</small>
-            </div>
-          </div>
-        </div>
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><%= link_to "Inicio", root_path, class: "btn btn-link p-0 m-0" %></li>
+    <li class="breadcrumb-item"><%= link_to "Perfil", user_path(@user), class: "btn btn-link p-0 m-0" %></li>
+    <li class="breadcrumb-item active">Editar perfil</li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card shadow mb-4">
+      <div class="card-body text-center">
+        <% if @user.profile_picture.attached? %>
+          <%= image_tag @user.profile_picture, class: "img-fluid rounded-circle mb-3", style: "max-width: 200px;", alt: "Foto de perfil" %>
+        <% elsif @user.photo_profile.present? %>
+          <% profile_url = @user.photo_profile %>
+          <% profile_url = "http://#{profile_url}" unless profile_url.start_with?('http://', 'https://') %>
+          <img src="<%= profile_url %>" class="img-fluid rounded-circle mb-3" style="max-width: 200px;" alt="Foto de perfil">
+        <% else %>
+          <i class="bi bi-person-circle" style="font-size: 8rem;"></i>
+        <% end %>
+        <h4 class="card-title"><%= @user.user_name %></h4>
       </div>
     </div>
-    <div class="col-md-8">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h2 class="mb-0">Editar perfil</h2>
-        </div>
-        <div class="card-body">
-        <% if @user.errors.any? %>
-          <div class="alert alert-danger">
-            <h5>Corrige los siguientes errores:</h5>
-            <ul class="mb-0">
-              <% @user.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
-        <%= form_with model: @user, local: true, html: { multipart: true } do |f| %>
-          <div class="mb-3">
-              <%= f.label :user_name, "Nombre de usuario", class: "form-label" %>
-            <%= f.text_field :user_name, class: "form-control" %>
-          </div>
-          <div class="mb-3">
-              <%= f.label :email, "Correo electrónico", class: "form-label" %>
-            <%= f.email_field :email, class: "form-control" %>
-          </div>
-          <div class="mb-3">
-              <%= f.label :password, "Contraseña (dejar en blanco si no deseas cambiarla)", class: "form-label" %>
-            <%= f.password_field :password, class: "form-control" %>
-          </div>
-          <div class="mb-3">
-              <%= f.label :bio, "Biografía", class: "form-label" %>
-              <%= f.text_area :bio, class: "form-control", rows: 3, placeholder: "Cuéntanos algo sobre ti..." %>
-          </div>
+  </div>
+  
+  <div class="col-md-8">
+    <div class="card shadow" data-controller="form-validation">
+      <div class="card-header bg-primary text-white">
+        <h2 class="mb-0">Editar perfil</h2>
+      </div>
+      <div class="card-body">
+        <%= form_with(model: @user, local: true, html: { multipart: true, id: "user-form", data: { form_validation_target: "form", action: "submit->form-validation#validateForm" } }) do |f| %>
           
-          <div class="mb-3">
-            <label class="form-label fw-bold">Opciones de foto de perfil</label>
-            
-            <div class="row g-3">
-              <!-- Opción 1: URL de imagen personalizada -->
-              <div class="col-md-4">
-                <div class="card h-100">
-                  <div class="card-header bg-light">
-                    <h6 class="mb-0">URL de imagen personalizada</h6>
-                  </div>
-                  <div class="card-body">
-                    <p class="small mb-2">Ingresa una URL pública de imagen:</p>
-                    <%= text_field_tag 'user[photo_profile]', @user.photo_profile, 
-                                    class: "form-control", 
-                                    placeholder: "https://...",
-                                    id: "custom_photo_url" %>
-                    <small class="form-text text-muted">Si ingresas una URL, tendrá prioridad sobre los avatares predefinidos.</small>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Opción 2: Avatares predeterminados -->
-              <div class="col-md-4">
-                <div class="card h-100">
-                  <div class="card-header bg-light">
-                    <h6 class="mb-0">Avatar predeterminado</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="d-flex flex-wrap gap-2 justify-content-center">
-                      <% default_avatars = [
-                        "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Aneka&backgroundColor=b6e3f4",
-                        "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Felix&backgroundColor=d1d4f9",
-                        "https://api.dicebear.com/6.x/micah/svg?seed=Coco&backgroundColor=b6e3f4",
-                        "https://api.dicebear.com/6.x/micah/svg?seed=Daisy&backgroundColor=d1d4f9",
-                        "https://api.dicebear.com/6.x/thumbs/svg?seed=Mia&backgroundColor=ffd5dc",
-                        "https://api.dicebear.com/6.x/thumbs/svg?seed=Max&backgroundColor=c0aede",
-                        "https://api.dicebear.com/6.x/avataaars/svg?seed=Zoe&backgroundColor=ffdfbf",
-                        "https://api.dicebear.com/6.x/avataaars/svg?seed=Leo&backgroundColor=d1d4f9"
-                      ] %>
-                      
-                      <% default_avatars.each_with_index do |avatar_url, index| %>
-                        <div class="avatar-option">
-                          <label for="avatar_<%= index %>">
-                            <%= radio_button_tag "user[photo_profile]", avatar_url, (@user.photo_profile == avatar_url), 
-                                                id: "avatar_#{index}", class: "d-none" %>
-                            <img src="<%= avatar_url %>" class="rounded-circle" 
-                                 style="width: 50px; height: 50px; border: 2px solid <%= @user.photo_profile == avatar_url ? '#0d6efd' : 'transparent' %>;">
-                          </label>
-                        </div>
-                      <% end %>
-                    </div>
-                    <small class="form-text text-muted mt-2">Haz clic en un avatar para seleccionarlo.</small>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="col-md-4">
-                <div class="card h-100">
-                  <div class="card-header bg-light">
-                    <h6 class="mb-0">Subir foto</h6>
-                  </div>
-                  <div class="card-body">
-                    <%= f.file_field :profile_picture, class: "form-control", accept: "image/*" %>
-                    <small class="form-text text-muted">Esta opción tendrá prioridad sobre las demás.</small>
-                    
-                    <% if @user.profile_picture.attached? %>
-                      <div class="text-center mt-2">
-                        <p class="small text-muted">Imagen actual:</p>
-                        <%= image_tag @user.profile_picture, class: "rounded-circle mb-2", style: "width: 60px; height: 60px; object-fit: cover;" %>
-                        <div class="form-check mt-1">
-                          <%= check_box_tag :remove_profile_picture, '1', false, class: "form-check-input" %>
-                          <%= label_tag :remove_profile_picture, "Eliminar imagen", class: "form-check-label text-danger" %>
-                        </div>
-                      </div>
-                    <% end %>
-                  </div>
-                </div>
-              </div>
+          <% if @user.errors.any? %>
+            <div class="alert alert-danger" role="alert">
+              <h5>Corrige los siguientes errores:</h5>
+              <ul class="mb-0">
+                <% @user.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
             </div>
+          <% end %>
+          
+          <div class="mb-3" role="group" aria-labelledby="username-label">
+            <%= f.label :user_name, "Nombre de usuario", id: "username-label", class: "form-label" %>
+            <%= f.text_field :user_name, class: "form-control", required: true, aria_required: "true", aria_describedby: "username-help username-error", data: { form_validation_target: "field" }, id: "user-username" %>
+            <div id="username-help" class="form-text">3-30 caracteres, solo letras, números y guiones bajos</div>
+            <div id="username-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
           </div>
           
-          <div class="text-end mt-4">
-            <%= link_to "Cancelar", user_path(@user), class: "btn btn-outline-secondary me-2" %>
-            <%= f.submit "Guardar cambios", class: "btn btn-primary" %>
+          <div class="mb-3" role="group" aria-labelledby="email-label">
+            <%= f.label :email, "Correo electrónico", id: "email-label", class: "form-label" %>
+            <%= f.email_field :email, class: "form-control", required: true, aria_required: "true", aria_describedby: "email-error", data: { form_validation_target: "field" }, id: "user-email" %>
+            <div id="email-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
+          </div>
+          
+          <div class="mb-3" role="group" aria-labelledby="password-label">
+            <%= f.label :password, "Contraseña (dejar en blanco si no deseas cambiarla)", id: "password-label", class: "form-label" %>
+            <%= f.password_field :password, class: "form-control", aria_describedby: "password-help password-error", data: { form_validation_target: "field" }, id: "user-password" %>
+            <div id="password-help" class="form-text">Mínimo 6 caracteres</div>
+            <div id="password-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
+          </div>
+          
+          <div class="mb-3" role="group" aria-labelledby="bio-label">
+            <%= f.label :bio, "Biografía", id: "bio-label", class: "form-label" %>
+            <%= f.text_area :bio, class: "form-control", rows: 3, placeholder: "Cuéntanos algo sobre ti...", aria_describedby: "bio-help", data: { form_validation_target: "field" }, id: "user-bio" %>
+            <div id="bio-help" class="form-text">Máximo 500 caracteres</div>
+          </div>
+          
+          <div class="mb-3" role="group" aria-labelledby="profile-picture-label">
+            <%= f.label :profile_picture, "Foto de perfil", id: "profile-picture-label", class: "form-label" %>
+            <%= f.file_field :profile_picture, class: "form-control", accept: "image/*", aria_describedby: "profile-picture-help", data: { form_validation_target: "field" }, id: "user-profile-picture" %>
+            <div id="profile-picture-help" class="form-text">Formatos aceptados: JPG, PNG, GIF</div>
+          </div>
+          
+          <div class="form-actions mt-4">
+            <%= f.submit "Guardar cambios", class: "btn btn-primary", data: { form_validation_target: "submit" } %>
+            <%= link_to "Cancelar", user_path(@user), class: "btn btn-secondary ms-2" %>
           </div>
         <% end %>
-        </div>
       </div>
     </div>
   </div>
