@@ -49,7 +49,11 @@
                   <img src="<%= image_url %>" class="card-img-top post-image" alt="Imagen del post">
                 <% elsif post.images.first.file.attached? %>
                   <%= image_tag url_for(post.images.first.file), class: "card-img-top post-image", alt: "Imagen del post" %>
+                <% else %>
+                  <img src="https://placehold.co/600x400?text=Sin+imagen" class="card-img-top post-image" alt="Imagen por defecto">
                 <% end %>
+              <% else %>
+                <img src="https://placehold.co/600x400?text=Sin+imagen" class="card-img-top post-image" alt="Imagen por defecto">
               <% end %>
             <div class="card-body">
                 <h5 class="card-title fw-bold">

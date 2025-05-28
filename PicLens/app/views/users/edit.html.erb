@@ -1,11 +1,3 @@
-<nav aria-label="breadcrumb" class="mb-4">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><%= link_to "Inicio", root_path, class: "btn btn-link p-0 m-0" %></li>
-    <li class="breadcrumb-item"><%= link_to "Perfil", user_path(@user), class: "btn btn-link p-0 m-0" %></li>
-    <li class="breadcrumb-item active">Editar perfil</li>
-  </ol>
-</nav>
-
 <div class="row">
   <div class="col-md-4">
     <div class="card shadow mb-4">
@@ -67,6 +59,29 @@
             <%= f.label :bio, "Biografía", id: "bio-label", class: "form-label" %>
             <%= f.text_area :bio, class: "form-control", rows: 3, placeholder: "Cuéntanos algo sobre ti...", aria_describedby: "bio-help", data: { form_validation_target: "field" }, id: "user-bio" %>
             <div id="bio-help" class="form-text">Máximo 500 caracteres</div>
+          </div>
+          
+          <div class="mb-3" role="group" aria-labelledby="avatar-label">
+            <label id="avatar-label" class="form-label">Escoge un avatar predeterminado</label>
+            <div class="d-flex flex-wrap gap-2">
+              <% avatares = [
+                "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Aneka&backgroundColor=b6e3f4",
+                "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Felix&backgroundColor=d1d4f9",
+                "https://api.dicebear.com/6.x/micah/svg?seed=Coco&backgroundColor=b6e3f4",
+                "https://api.dicebear.com/6.x/micah/svg?seed=Daisy&backgroundColor=d1d4f9",
+                "https://api.dicebear.com/6.x/thumbs/svg?seed=Mia&backgroundColor=fcd5ce",
+                "https://api.dicebear.com/6.x/thumbs/svg?seed=Max&backgroundColor=ffd6a5",
+                "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Rex&backgroundColor=fdffb6",
+                "https://api.dicebear.com/6.x/micah/svg?seed=Zoe&backgroundColor=caffbf"
+              ] %>
+              <% avatares.each do |url| %>
+                <label class="avatar-option">
+                  <%= radio_button_tag 'user[photo_profile]', url, @user.photo_profile == url, class: "d-none", id: "avatar-#{Digest::MD5.hexdigest(url)}" %>
+                  <img src="<%= url %>" alt="Avatar" class="rounded-circle border avatar-img <%= 'selected' if @user.photo_profile == url %>" style="width: 60px; height: 60px; cursor: pointer; border-width: 2px; border-color: #0d6efd;">
+                </label>
+              <% end %>
+            </div>
+            <div class="form-text">O puedes subir tu propia foto abajo</div>
           </div>
           
           <div class="mb-3" role="group" aria-labelledby="profile-picture-label">

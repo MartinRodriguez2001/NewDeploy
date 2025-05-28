@@ -29,7 +29,7 @@ class CommentsController < ApplicationController
 
   def update
     if @comment.update(comment_params)
-      redirect_to post_comment_path(@post, @comment), notice: 'Comentario actualizado correctamente.'
+      redirect_to post_path(@post), notice: 'Comentario actualizado correctamente.'
     else
       render :edit
     end
@@ -37,7 +37,7 @@ class CommentsController < ApplicationController
 
   def destroy
     @comment.destroy
-    redirect_to post_comments_path(@post), notice: 'Comentario eliminado correctamente.'
+    redirect_to post_path(@post), notice: 'Comentario eliminado correctamente.'
   end
 
   private

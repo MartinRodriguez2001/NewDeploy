@@ -135,12 +135,12 @@ User.all.each do |user|
       p.image_count = 1
     end
 
-    unless post.images.any? && imagenes.include?(post.images.first.image_url)
-       Image.find_or_create_by!(post: post, image_url: imagenes.sample) do |img|
-         img.position = 1
-       end
+    # Siempre asignar una imagen, aunque ya tenga una
+    if post.images.empty?
+      Image.create!(post: post, image_url: imagenes.sample, position: 1)
+    else
+      post.images.first.update(image_url: imagenes.sample)
     end
-
 
     Hashtag.all.sample(rand(1..4)).each do |hashtag|
       post.hashtags << hashtag unless post.hashtags.include?(hashtag)

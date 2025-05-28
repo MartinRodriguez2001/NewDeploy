@@ -124,6 +124,8 @@ input[type="file"]::file-selector-button:hover {
   background-color: #dde2e6;
 }
 
+/* Eliminar o comentar las reglas que fuerzan el color blanco en notificaciones */
+/*
 .notificaciones-container,
 .notificaciones-container * {
   color: #f8f9fa !important;
@@ -134,4 +136,27 @@ input[type="file"]::file-selector-button:hover {
 .notifications-page .alert,
 .notifications-page .bi {
   color: #f8f9fa !important;
+}
+*/
+
+.notifications-page .card {
+  color: #222 !important;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+}
+.notifications-page .card .card-body, .notifications-page .card .card-footer {
+  color: #222 !important;
+}
+
+.avatar-img.selected {
+  border: 2px solid #0d6efd !important;
+  box-shadow: 0 0 0 2px #b6e3f4;
+}
+.avatar-img {
+  border: 2px solid #ccc;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.avatar-option input[type="radio"]:checked + .avatar-img {
+  border: 2px solid #0d6efd !important;
+  box-shadow: 0 0 0 2px #b6e3f4;
 } 

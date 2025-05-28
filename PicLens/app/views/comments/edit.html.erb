@@ -1,2 +1,32 @@
-<h1>Comments#edit</h1>
-<p>Find me in app/views/comments/edit.html.erb</p>
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="col-md-6">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h2 class="mb-0">Editar comentario</h2>
+      </div>
+      <div class="card-body">
+        <%= form_with(model: [@comment.post, @comment], local: true, html: { id: "comment-form", data: { form_validation_target: "form", action: "submit->form-validation#validateForm" } }) do |f| %>
+          <% if @comment.errors.any? %>
+            <div class="alert alert-danger" role="alert">
+              <h5>Corrige los siguientes errores:</h5>
+              <ul class="mb-0">
+                <% @comment.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+          <div class="mb-3" role="group" aria-labelledby="comment-label">
+            <%= f.label :text, "Comentario", id: "comment-label", class: "form-label" %>
+            <%= f.text_area :text, class: "form-control", rows: 3, required: true, aria_required: "true", aria_describedby: "comment-error", data: { form_validation_target: "field" }, id: "comment-text" %>
+            <div id="comment-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
+          </div>
+          <div class="form-actions mt-4">
+            <%= f.submit "Guardar cambios", class: "btn btn-primary", data: { form_validation_target: "submit" } %>
+            <%= link_to "Cancelar", post_path(@comment.post), class: "btn btn-secondary ms-2" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

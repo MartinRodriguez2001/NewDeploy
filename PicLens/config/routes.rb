@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   resources :posts do
     resources :images
-    resources :comments
+    resources :comments, only: [:edit, :update, :create, :new, :destroy]
     resources :likes, only: [:create, :destroy]
     resources :post_hashtags, only: [:create, :destroy]
   end
