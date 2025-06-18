@@ -28,6 +28,7 @@ avatares = [
     user.password = "password123"
     user.bio = "Este es el perfil del usuario #{i + 1}. Explorando el mundo a través de imágenes."
     user.photo_profile = avatares.sample
+    user.role = 'user'
   end
 end
 
@@ -135,7 +136,6 @@ User.all.each do |user|
       p.image_count = 1
     end
 
-    # Siempre asignar una imagen, aunque ya tenga una
     if post.images.empty?
       Image.create!(post: post, image_url: imagenes.sample, position: 1)
     else

@@ -1,9 +1,10 @@
 class UsersController < ApplicationController
   before_action :require_user, except: [:new, :create]
-  before_action :set_user, only: %i[show edit update destroy]
+  before_action :set_user, only: %i[show edit update destroy ban]
+  load_and_authorize_resource except: [:new, :create]
 
   def index
-    @users = User.all
+    @users = User.accessible_by(current_ability)
   end
 
   def discover
@@ -26,6 +27,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.role = "user"
     @user.bio = "Usuario de PicLens"
     
     default_avatars = [
@@ -55,8 +57,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.find(params[:id])
-    
+    authorize! :update, @user
     user_attrs = if params[:user][:password].present?
                   user_params 
                 else
@@ -87,8 +88,15 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    authorize! :destroy, @user
     @user.destroy
     redirect_to users_url, notice: 'Usuario eliminado.'
+  end
+
+  def ban
+    authorize! :ban, @user
+    @user.update(banned: true)
+    redirect_to user_path(@user), notice: "Usuario baneado correctamente."
   end
 
   private
@@ -104,4 +112,9 @@ class UsersController < ApplicationController
       params.require(:user).permit(:user_name, :email, :password, :bio, :photo_profile)
     end
   end
+end
+
+
+def current_user
+  @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
 end

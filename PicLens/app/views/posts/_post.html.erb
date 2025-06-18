@@ -14,6 +14,12 @@
           <small class="text-muted d-block"><i class="bi bi-geo-alt"></i> <%= post.location %></small>
         <% end %>
       </div>
+      <% if can? :update, post %>
+        <%= link_to "Editar", edit_post_path(post), class: "btn btn-warning btn-sm ms-2" %>
+      <% end %>
+      <% if can? :destroy, post %>
+        <%= button_to "Eliminar", post_path(post), method: :delete, class: "btn btn-danger btn-sm ms-2", data: { confirm: "¿Estás seguro?" } %>
+      <% end %>
     </div>
   </div>
 
@@ -66,9 +72,14 @@
     <% end %>
 
     <% if post.hashtags.any? %>
-      <div class="mb-2">
-        <% post.hashtags.each do |hashtag| %>
-          <%= link_to "##{hashtag.tag}", hashtag_path(hashtag), class: "hashtag-link" %>
+      <div class="mb-2 d-flex align-items-center">
+        <div>
+          <% post.hashtags.each do |hashtag| %>
+            <%= link_to "##{hashtag.tag}", hashtag_path(hashtag), class: "hashtag-link" %>
+          <% end %>
+        </div>
+        <% if can? :destroy, post %>
+          <%= button_to "Eliminar", post_path(post), method: :delete, class: "btn btn-danger btn-sm ms-2", data: { confirm: "¿Estás seguro?" } %>
         <% end %>
       </div>
     <% end %>
@@ -84,6 +95,13 @@
         <% if post.comments.count > 2 %>
           <%= link_to "Ver todos los comentarios", post_path(post), class: "text-muted text-decoration-none" %>
         <% end %>
+      </div>
+    <% end %>
+
+    <%# Botón de eliminar para el dueño del post (no admin) en la parte inferior %>
+    <% if current_user&.role == 'user' && can?(:destroy, post) %>
+      <div class="mt-2">
+        <%= button_to "Eliminar", post_path(post), method: :delete, class: "btn btn-danger btn-sm", data: { confirm: "¿Estás seguro?" } %>
       </div>
     <% end %>
   </div>

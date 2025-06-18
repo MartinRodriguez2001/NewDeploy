@@ -56,8 +56,10 @@
                 </li>
               <% end %>
             </ul>
-            <div class="mt-3 text-end">
-              <%= link_to "Ver todas mis publicaciones", main_path, class: "btn btn-outline-secondary btn-sm" %>
+            <div class="mt-3 text-center">
+              <%= link_to "/my_posts", class: "btn btn-success" do %>
+                <i class="bi bi-grid-3x3"></i> Ver todas mis publicaciones
+              <% end %>
             </div>
           <% else %>
             <p class="text-muted">Aún no tienes publicaciones.</p>

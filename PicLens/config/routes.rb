@@ -1,20 +1,30 @@
 Rails.application.routes.draw do
-  get "sessions/new"
-  get "sessions/create"
-  get "sessions/destroy"
+
+  devise_for :users, path: '', path_names: {
+    sign_in: 'login',
+    sign_out: 'logout',
+    sign_up: 'register',
+    edit: 'edit'
+  }
+
+  devise_scope :user do
+    get 'login', to: 'devise/sessions#new'
+    get 'register', to: 'devise/registrations#new'
+    delete 'logout', to: 'devise/sessions#destroy'
+  end
+
   root "pages#home"
 
-  resources :users, only: [:new, :create, :show, :edit, :update]
-  get 'login', to: 'sessions#new'
-  post 'login', to: 'sessions#create'
-  delete 'logout', to: 'sessions#destroy'
+  get '/my_posts', to: 'posts#my_posts', as: :my_posts
 
   get 'discover', to: 'users#discover', as: :discover
 
-  resources :users, only: [:new, :create, :show, :edit, :update] do
-    resources :posts, only: [:index], controller: 'user_posts'
+  resources :users do
     resources :user_tokens, except: [:show]
     resources :notifications, only: [:index, :show]
+    member do
+      post :ban
+    end
   end
 
   resources :posts do

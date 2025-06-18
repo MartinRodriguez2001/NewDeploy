@@ -1,41 +1,65 @@
-<div class="container">
-  <h2 class="mb-4">Mis publicaciones</h2>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><%= @user == current_user ? "Mis Publicaciones" : "Publicaciones de #{@user.user_name}" %></h2>
+    <%= link_to "Volver al perfil", user_path(@user), class: "btn btn-outline-secondary" %>
+  </div>
+
   <% if @posts.any? %>
     <div class="row">
       <% @posts.each do |post| %>
         <div class="col-md-4 mb-4">
           <div class="card h-100">
             <% if post.images.any? %>
-              <img src="<%= post.images.first.image_url %>" class="card-img-top post-image" alt="Imagen del post">
+              <% if post.images.first.file.attached? %>
+                <%= image_tag post.images.first.file, class: "card-img-top post-image", alt: "Imagen del post" %>
+              <% elsif post.images.first.image_url.present? %>
+                <img src="<%= post.images.first.image_url %>" class="card-img-top post-image" alt="Imagen del post">
+              <% end %>
             <% end %>
+            
             <div class="card-body">
               <h5 class="card-title"><%= link_to truncate(post.caption, length: 50), post_path(post) %></h5>
-              <p class="card-text"><%= post.location %></p>
-              <div>
+              <% if post.location.present? %>
+                <p class="card-text"><i class="bi bi-geo-alt"></i> <%= post.location %></p>
+              <% end %>
+              <div class="mb-2">
                 <% post.hashtags.each do |hashtag| %>
                   <span class="badge bg-primary">#<%= hashtag.tag %></span>
                 <% end %>
               </div>
-            </div>
-            <div class="card-footer text-muted">
-              <div class="d-flex justify-content-between">
+              <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <%= link_to post_path(post, anchor: 'comments'), class: "text-decoration-none" do %>
-                    <i class="bi bi-chat"></i> <%= pluralize(post.comments.count, 'comentario') %>
-                  <% end %>
+                  <i class="bi bi-heart"></i> <%= post.likes.count %>
+                  <i class="bi bi-chat ms-2"></i> <%= post.comments.count %>
                 </div>
-                <div>
-                  <%= link_to post_path(post), class: "text-decoration-none" do %>
-                    <i class="bi bi-heart"></i> <%= pluralize(post.likes.count, 'me gusta') %>
-                  <% end %>
-                </div>
+                <% if current_user.role == 'admin' || post.user == current_user %>
+                  <div>
+                    <%= link_to "Editar", edit_post_path(post), class: "btn btn-warning btn-sm" %>
+                    <%= button_to "Eliminar", post_path(post), 
+                        method: :delete, 
+                        class: "btn btn-danger btn-sm ms-1", 
+                        form: { style: 'display: inline-block' },
+                        data: { turbo_confirm: "¿Estás seguro de que quieres eliminar esta publicación?" } %>
+                  </div>
+                <% end %>
               </div>
             </div>
           </div>
         </div>
       <% end %>
     </div>
+    
+    <div class="d-flex justify-content-center">
+      <%= paginate @posts %>
+    </div>
   <% else %>
-    <p>No has publicado nada aún.</p>
+    <div class="alert alert-info">
+      <% if @user == current_user %>
+        No has realizado ninguna publicación aún.
+        <%= link_to "¡Crea tu primera publicación!", new_post_path, class: "alert-link" %>
+      <% else %>
+        Este usuario no tiene publicaciones.
+      <% end %>
+    </div>
   <% end %>
-</div> 
+</div>

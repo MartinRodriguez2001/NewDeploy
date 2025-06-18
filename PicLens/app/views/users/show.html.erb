@@ -17,13 +17,21 @@
           <p><%= @user.bio %></p>
           
           <% if @user == current_user %>
-            <%= link_to "Editar perfil", edit_user_path(@user), class: "btn btn-primary" %>
+            <div class="d-flex justify-content-center gap-3">
+              <%= link_to "Editar perfil", edit_user_path(@user), class: "btn btn-primary" %>
+              <button onclick="window.location.href='/my_posts'" type="button" class="btn btn-success">
+                <i class="bi bi-grid-3x3"></i> Ver todas mis publicaciones
+              </button>
+            </div>
           <% else %>
             <% if current_user.following?(@user) %>
               <%= button_to "Dejar de seguir", follower_path(current_user.active_relationships.find_by(followed_id: @user.id)), 
                   method: :delete, class: "btn btn-outline-primary" %>
             <% else %>
               <%= button_to "Seguir", followers_path(followed_id: @user.id), class: "btn btn-primary" %>
+            <% end %>
+            <% if can? :ban, @user %>
+              <%= button_to "Banear Usuario", ban_user_path(@user), method: :post, class: "btn btn-danger", data: { confirm: "¿Estás seguro?" } %>
             <% end %>
           <% end %>
         </div>

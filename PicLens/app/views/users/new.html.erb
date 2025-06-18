@@ -30,7 +30,7 @@
         <%= f.email_field :email, class: "form-control", required: true, aria_required: "true", aria_describedby: "email-error", data: { form_validation_target: "field" }, id: "user-email" %>
         <div id="email-error" class="invalid-feedback" role="alert" data-form-validation-target="error"></div>
       </div>
-      
+
       <div class="mb-3" role="group" aria-labelledby="password-label">
         <%= f.label :password, "Contraseña", id: "password-label", class: "form-label" %>
         <%= f.password_field :password, class: "form-control", required: true, aria_required: "true", aria_describedby: "password-help password-error", data: { form_validation_target: "field" }, id: "user-password" %>

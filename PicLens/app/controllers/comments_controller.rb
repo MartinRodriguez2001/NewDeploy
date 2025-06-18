@@ -2,6 +2,7 @@ class CommentsController < ApplicationController
   before_action :set_post
   before_action :set_comment, only: %i[show edit update destroy]
   before_action :require_user
+  load_and_authorize_resource
 
   def index
     @comments = @post.comments.includes(:user)
@@ -17,6 +18,7 @@ class CommentsController < ApplicationController
   def create
     @comment = @post.comments.build(comment_params)
     @comment.user = current_user
+    authorize! :create, @comment
     if @comment.save
       redirect_to post_path(@post), notice: 'Comentario agregado.'
     else
@@ -28,6 +30,7 @@ class CommentsController < ApplicationController
   end
 
   def update
+    authorize! :update, @comment
     if @comment.update(comment_params)
       redirect_to post_path(@post), notice: 'Comentario actualizado correctamente.'
     else
@@ -36,6 +39,7 @@ class CommentsController < ApplicationController
   end
 
   def destroy
+    authorize! :destroy, @comment
     @comment.destroy
     redirect_to post_path(@post), notice: 'Comentario eliminado correctamente.'
   end

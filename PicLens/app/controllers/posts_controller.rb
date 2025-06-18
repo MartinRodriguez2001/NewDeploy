@@ -1,6 +1,8 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
   before_action :require_user, except: [:index, :show]
+  skip_before_action :verify_authenticity_token, only: [:my_posts]
+  load_and_authorize_resource except: [:index, :show, :my_posts]
 
   def index
     if params[:q].present?
@@ -10,7 +12,7 @@ class PostsController < ApplicationController
       posts_by_caption = Post.where("caption ILIKE ?", "%#{params[:q]}%")
       @posts = (posts_by_hashtag + posts_by_caption).uniq
       @posts = Post.where(id: @posts.map(&:id)).includes(:user, :images, :likes, :comments, :hashtags).order(created_at: :desc).page(params[:page]).per(12)
-    elsif logged_in?
+    elsif user_signed_in?
       @posts = Post.includes(:user, :images, :likes, :comments, :hashtags)
                    .order('RANDOM()')
                    .page(params[:page])
@@ -34,7 +36,9 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = current_user.posts.build(post_params)
+    @post = Post.new(post_params)
+    @post.user = current_user
+    authorize! :create, @post
 
     if @post.save
       if params[:post][:image_url].present?
@@ -61,6 +65,7 @@ class PostsController < ApplicationController
   end
 
   def update
+    authorize! :update, @post
     if @post.update(post_params)
       if params[:post][:image_url].present?
         url = params[:post][:image_url].strip
@@ -83,10 +88,22 @@ class PostsController < ApplicationController
   end
 
   def destroy
+    authorize! :destroy, @post
     @post.destroy
     redirect_to posts_path, notice: 'Post eliminado exitosamente.'
   end
 
+  def my_posts
+    return redirect_to login_path unless current_user
+    
+    @posts = current_user.posts
+                        .includes(:images, :likes, :comments, :hashtags, :user)
+                        .order(created_at: :desc)
+                        .page(params[:page])
+                        .per(12)
+    
+    render 'my_posts'
+  end
   private
 
   def set_post

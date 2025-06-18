@@ -1,29 +1,38 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :authenticate_user!
+  before_action :check_banned
 
-  helper_method :current_user, :logged_in?
+  rescue_from CanCan::AccessDenied do |exception|
+    flash[:alert] = "No tienes permiso para realizar esta acción"
+    redirect_to root_path
+  end
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:user_name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:user_name])
+  end
+  
+  def after_sign_in_path_for(resource)
+    main_path
+  end
+  
+  def after_sign_up_path_for(resource)
+    main_path
+  end
 
   private
 
-  def current_user
-    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
-  end
-
-  def logged_in?
-    !!current_user
-  end
-
   def require_user
-    unless logged_in?
-      flash[:alert] = "Debes iniciar sesión para realizar esta acción"
-      redirect_to login_path
-    end
+    authenticate_user!
   end
 
-  def require_same_user
-    unless current_user == @user
-      flash[:alert] = "No tienes permiso para realizar esta acción"
+  def check_banned
+    if current_user&.banned?
+      sign_out current_user
+      flash[:alert] = "Tu cuenta ha sido baneada. Contacta al administrador."
       redirect_to root_path
     end
   end
