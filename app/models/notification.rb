@@ -17,17 +17,25 @@ class Notification < ApplicationRecord
   private
 
   def broadcast_notification
-    NotificationsChannel.broadcast_to(
-      user,
-      {
-        id: id,
-        message: message,
-        notification_type: notification_type,
-        created_at: created_at,
-        read: read,
-        notifiable_type: notifiable_type,
-        notifiable_id: notifiable_id
-      }
-    )
+    # Ensure the notification has been persisted and has an ID
+    return unless persisted? && id.present?
+    
+    begin
+      NotificationsChannel.broadcast_to(
+        user,
+        {
+          id: id,
+          message: message,
+          notification_type: notification_type,
+          created_at: created_at.iso8601,
+          read: read,
+          notifiable_type: notifiable_type,
+          notifiable_id: notifiable_id
+        }
+            )
+    rescue => e
+      Rails.logger.error "Failed to broadcast notification #{id}: #{e.message}"
+      # Don't raise the error to prevent breaking the main flow
+    end
   end
 end
