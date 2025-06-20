@@ -7,7 +7,7 @@ Una aplicación de redes sociales construida con Ruby on Rails que permite a los
 Este proyecto está configurado para deployment automático en Render.
 
 ### Variables de Entorno Requeridas:
-- `RAILS_MASTER_KEY`: `08fd5000cdf12de4b0a438cffd648cea`
+- `RAILS_MASTER_KEY`: `cac35977f1b62444e5d10efd79d60ff4`
 - `DATABASE_URL`: Conectar desde base de datos PostgreSQL
 - `RAILS_ENV`: `production`
 - `BUNDLE_WITHOUT`: `development:test`

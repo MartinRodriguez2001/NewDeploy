@@ -48,7 +48,7 @@ postgres://username:password@hostname:port/database_name
 ### Variables Principales:
 ```bash
 DATABASE_URL=postgres://user:pass@hostname:5432/dbname
-RAILS_MASTER_KEY=08fd5000cdf12de4b0a438cffd648cea
+RAILS_MASTER_KEY=cac35977f1b62444e5d10efd79d60ff4
 RAILS_ENV=production
 BUNDLE_WITHOUT=development:test
 RAILS_SERVE_STATIC_FILES=true
