@@ -1,0 +1,19 @@
+<div id="follow_button_<%= user.id %>">
+  <% relationship = current_user.active_relationships.find_by(followed_id: user.id) %>
+  <% if relationship %>
+    <%= button_to "Dejar de seguir", follower_path(relationship), 
+        method: :delete, 
+        class: local_assigns[:btn_class] || "btn btn-outline-primary", 
+        data: { 
+          turbo: true,
+          turbo_confirm: "¿Estás seguro de que quieres dejar de seguir a #{user.user_name}?" 
+        },
+        form: { data: { turbo_stream: true } } %>
+  <% else %>
+    <%= button_to "Seguir", followers_path(followed_id: user.id), 
+        method: :post, 
+        class: local_assigns[:btn_class] || "btn btn-primary", 
+        data: { turbo: true },
+        form: { data: { turbo_stream: true } } %>
+  <% end %>
+</div>

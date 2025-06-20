@@ -1,0 +1,12 @@
+<%# Update follow button after successful follow action %>
+<%= turbo_stream.replace "follow_button_#{@followed.id}" do %>
+  <%= render 'users/unfollow_button', user: @followed %>
+<% end %>
+
+<%# Optional: Show a notification %>
+<%= turbo_stream.prepend "notifications" do %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    Ahora sigues a <%= @followed.user_name %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% end %>

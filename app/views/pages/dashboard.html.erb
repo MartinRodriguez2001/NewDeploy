@@ -89,7 +89,11 @@
                         <i class="bi bi-person-circle mb-2" style="font-size: 60px;"></i>
                       <% end %>
                       <h6 class="card-title"><%= user.user_name %></h6>
-                      <%= button_to "Seguir", followers_path(followed_id: user.id), class: "btn btn-outline-primary btn-sm", method: :post %>
+                      <% if current_user.following?(user) %>
+                        <%= render 'users/unfollow_button', user: user, btn_class: "btn btn-outline-primary btn-sm" %>
+                      <% else %>
+                        <%= render 'users/follow_button', user: user, btn_class: "btn btn-primary btn-sm" %>
+                      <% end %>
                     </div>
                   </div>
                 </div>

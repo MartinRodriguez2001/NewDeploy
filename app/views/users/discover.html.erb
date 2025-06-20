@@ -25,7 +25,11 @@
               
               <div class="d-flex justify-content-between align-items-center mt-3">
                 <%= link_to "Ver perfil", user_path(user), class: "btn btn-outline-secondary btn-sm" %>
-                <%= button_to "Seguir", followers_path(followed_id: user.id), method: :post, class: "btn btn-primary btn-sm" %>
+                <% if current_user.following?(user) %>
+                  <%= render 'users/unfollow_button', user: user, btn_class: "btn btn-outline-primary btn-sm" %>
+                <% else %>
+                  <%= render 'users/follow_button', user: user, btn_class: "btn btn-primary btn-sm" %>
+                <% end %>
               </div>
             </div>
           </div>

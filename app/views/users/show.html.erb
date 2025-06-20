@@ -24,14 +24,15 @@
               </button>
             </div>
           <% else %>
-            <% if current_user.following?(@user) %>
-              <%= button_to "Dejar de seguir", follower_path(current_user.active_relationships.find_by(followed_id: @user.id)), 
-                  method: :delete, class: "btn btn-outline-primary" %>
-            <% else %>
-              <%= button_to "Seguir", followers_path(followed_id: @user.id), class: "btn btn-primary" %>
-            <% end %>
+            <div class="d-flex justify-content-center gap-2">
+              <%= render 'users/follow_button', user: @user if !current_user.following?(@user) %>
+              <%= render 'users/unfollow_button', user: @user if current_user.following?(@user) %>
+              <%= button_to chat_path(@user), class: "btn btn-outline-info", method: :get do %>
+                <i class="bi bi-chat"></i> Enviar mensaje
+              <% end %>
+            </div>
             <% if can? :ban, @user %>
-              <%= button_to "Banear Usuario", ban_user_path(@user), method: :post, class: "btn btn-danger", data: { confirm: "¿Estás seguro?" } %>
+              <%= button_to "Banear Usuario", ban_user_path(@user), method: :post, class: "btn btn-danger mt-2", data: { confirm: "¿Estás seguro?" } %>
             <% end %>
           <% end %>
         </div>

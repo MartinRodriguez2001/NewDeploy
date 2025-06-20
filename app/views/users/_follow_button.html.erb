@@ -1,0 +1,7 @@
+<div id="follow_button_<%= user.id %>">
+  <%= button_to "Seguir", followers_path(followed_id: user.id), 
+      method: :post, 
+      class: local_assigns[:btn_class] || "btn btn-primary", 
+      data: { turbo: true },
+      form: { data: { turbo_stream: true } } %>
+</div>
