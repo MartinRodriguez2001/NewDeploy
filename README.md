@@ -1,58 +1,49 @@
-# Project Assignment
+# PicLens - Social Media Application
 
-## Members:
-- Bastian Cepeda
-- Lucas Fuentes
-- Martin Rodriguez
+Una aplicación de redes sociales construida con Ruby on Rails que permite a los usuarios compartir imágenes, interactuar y comunicarse.
 
-## Commands to implement in case of errors
+## 🚀 Deployment en Render
 
+Este proyecto está configurado para deployment automático en Render.
+
+### Variables de Entorno Requeridas:
+- `RAILS_MASTER_KEY`: `08fd5000cdf12de4b0a438cffd648cea`
+- `DATABASE_URL`: Conectar desde base de datos PostgreSQL
+- `RAILS_ENV`: `production`
+- `BUNDLE_WITHOUT`: `development:test`
+- `RAILS_SERVE_STATIC_FILES`: `true`
+
+### Archivos de Configuración:
+- `bin/render-build.sh`: Script de build para Render
+- `render.yaml`: Configuración Infrastructure as Code
+- `DEPLOYMENT.md`: Guía completa de deployment
+- `POSTGRES_SETUP.md`: Guía específica de PostgreSQL
+
+## 🛠️ Desarrollo Local
+
+### Prerrequisitos:
+- Ruby 3.4.4+
+- PostgreSQL
+- Node.js
+- Yarn
+
+### Setup:
 ```bash
-rails assets:clobber
-rails assets:precompile
-
-#For the image in the web-site
-sudo apt update
-sudo apt install redis-server
+bundle install
+yarn install
+rails db:create db:migrate db:seed
+rails server
 ```
 
-## Commands to implement for the create Admin User
+## 📁 Estructura del Proyecto
 
- ```bash
- rails users:setup
- ```
-
-## Test User Credentials
-
-The following test accounts are available for login:
-
-- **Admin Account**:
-  - Email: admins@piclens.com
-  - Password: admin123
-  - Role: admin (full access to all features)
-
-- **Regular User Accounts**:
-  - Email: usuario1@example.com to usuario20@example.com
-  - Password: password123
-  - Role: user (standard user permissions)
-
-## Roles and Permissions
-
-The application has two main roles with different permission levels:
-
-### Admin Role
-- Can manage all resources in the application
-- Can create, read, update, and delete any post
-- Can ban users
-- Has full access to all features
-
-### User Role
-- Can read all public content
-- Can discover other users
-- Can create posts and manage their own posts (edit/delete)
-- Can create comments and manage their own comments
-- Can like/unlike posts
-- Can update their own profile
-- Can follow/unfollow other users
-- Cannot modify content created by other users
-- Cannot access admin features
+```
+├── app/                    # Código de la aplicación
+├── bin/                    # Scripts ejecutables
+├── config/                 # Configuración
+├── db/                     # Base de datos y migraciones
+├── public/                 # Archivos estáticos
+├── render.yaml            # Configuración para Render
+├── DEPLOYMENT.md          # Guía de deployment
+└── POSTGRES_SETUP.md      # Guía de PostgreSQL
+```
