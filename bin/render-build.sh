@@ -37,10 +37,26 @@ bundle exec rails db:create || true
 echo "🔄 Running database migrations..."
 bundle exec rails db:migrate
 
-# Migrate additional databases (cache, queue, cable) if they exist
+# Set up SolidQueue (Rails 8 job queue system)
+echo "⚙️ Setting up SolidQueue for job processing..."
+bundle exec rails runner "
+  begin
+    # Check if SolidQueue tables exist
+    unless ActiveRecord::Base.connection.table_exists?('solid_queue_jobs')
+      puts '📦 Loading SolidQueue schema...'
+      load Rails.root.join('db/queue_schema.rb')
+      puts '✅ SolidQueue tables created successfully'
+    else
+      puts '✅ SolidQueue tables already exist'
+    end
+  rescue => e
+    puts \"⚠️ SolidQueue setup warning: #{e.message}\"
+  end
+"
+
+# Migrate additional databases (cache, cable) if they exist  
 echo "🔄 Running additional database migrations..."
 bundle exec rails db:migrate:cache || echo "⚠️ Cache migrations not available"
-bundle exec rails db:migrate:queue || echo "⚠️ Queue migrations not available" 
 bundle exec rails db:migrate:cable || echo "⚠️ Cable migrations not available"
 
 # Build assets
