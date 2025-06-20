@@ -20,7 +20,7 @@ gem "cssbundling-rails"
 gem "jbuilder"
 
 # Authentication
-gem 'devise'
+gem "devise"
 gem "bcrypt", "~> 3.1.7"
 gem "jwt", "~> 2.7"
 

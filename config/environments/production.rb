@@ -77,7 +77,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: ENV.fetch("RENDER_EXTERNAL_URL", "localhost") }
 
   # Enable serving static files from the /public folder
-  config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
