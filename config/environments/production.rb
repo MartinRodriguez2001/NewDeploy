@@ -1,10 +1,23 @@
 require "active_support/core_ext/integer/time"
+require "digest"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Configure secret_key_base from environment variable for Render deployment
-  config.secret_key_base = ENV["SECRET_KEY_BASE"] || Rails.application.credentials.secret_key_base
+  # Ensure we always have a valid string for secret_key_base
+  if ENV["SECRET_KEY_BASE"].present?
+    config.secret_key_base = ENV["SECRET_KEY_BASE"]
+  elsif ENV["RAILS_MASTER_KEY"].present?
+    config.secret_key_base = Digest::SHA256.hexdigest(ENV["RAILS_MASTER_KEY"])
+  else
+    begin
+      config.secret_key_base = Rails.application.credentials.secret_key_base
+    rescue StandardError => e
+      Rails.logger.warn "Failed to load credentials: #{e.message}"
+      raise "SECRET_KEY_BASE, RAILS_MASTER_KEY, or valid credentials must be available for production"
+    end
+  end
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
